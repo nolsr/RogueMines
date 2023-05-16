@@ -1,0 +1,25 @@
+{
+  "name": "rogue-mines",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack serve --open --config webpack.development.js",
+    "build": "webpack --config webpack.distribution.js"
+  },
+  "keywords": [],
+  "author": "Nils Rodenburg",
+  "license": "ISC",
+  "dependencies": {
+    "phaser": "^3.60.0"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "ts-loader": "^9.4.2",
+    "typescript": "^5.0.4",
+    "webpack": "^5.82.1",
+    "webpack-cli": "^5.1.1",
+    "webpack-dev-server": "^4.15.0"
+  }
+}
