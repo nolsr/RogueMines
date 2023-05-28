@@ -17,6 +17,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         left ? this.setOrigin(1, 0.5) : this.setOrigin(0, 0.5);
+        // this.setScale(5);
 
         this.flipX = left;
         this.play('projectile', true);

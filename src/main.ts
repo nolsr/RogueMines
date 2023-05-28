@@ -3,6 +3,12 @@ import { GameScene } from './scenes/Game';
 import { GameWindowData } from './types/GameWindowData';
 import { FaviconAnimater } from './classes/FaviconAnimater';
 
+const WebFontConfig = {
+    custom: {
+        families: ['pzim'],
+        urls: ['./styles.scss']
+    }
+};
 const gameWindowData: GameWindowData = {
     width: 200,
     height: 150
