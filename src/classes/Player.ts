@@ -6,12 +6,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
     health: number;
     maxHealth: number;
     speed: number;
-    totalExperience: number;
+    experience: number;
     experienceTillLevelup: number;
     levelProgress: number;
+    level: number;
     attackOnCooldown: boolean;
     attacking: boolean;
     attackCooldown: number;
+    power: number;
 
     constructor(scene: GameScene, x: number, y: number) {
         super(scene, x, y, 'player');
@@ -19,16 +21,18 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
         this.speed = 75;
         this.attackOnCooldown = false;
         this.attackCooldown = 500;
-        this.totalExperience = 0;
-        this.experienceTillLevelup = 200;
+        this.experience = 0;
+        this.experienceTillLevelup = 100;
+        this.level = 1;
+        this.power = 1;
 
         this.createAnimations();
-        
+
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.setSize(10, 14);
         this.setOffset(3, 2);
-        
+
         this.setOrigin(0.5, 1)
         this.setCollideWorldBounds(true);
         this.setDepth(10);
@@ -95,12 +99,33 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
     }
 
     public gainExperience(value: number) {
-        this.totalExperience += value;
-        console.log(this.totalExperience);
-        (this.scene as GameScene).updateLevelbar(this.totalExperience / this.experienceTillLevelup);
+        this.experience += value;
+        if (this.experience >= this.experienceTillLevelup) {
+            this.levelUp();
+        }
+        while (this.experience >= this.experienceTillLevelup) {
+            if (this.handleAccessExperience()) {
+                this.levelUp();
+            }
+        }
+        (this.scene as GameScene).updateLevelbar(this.experience / this.experienceTillLevelup);
+    }
+
+    private handleAccessExperience(): boolean {
+        this.experience = this.experience - this.experienceTillLevelup;
+        return this.experience >= this.experienceTillLevelup;
+    }
+
+    private levelUp() {
+        this.level++;
+        this.experience = 0;
+        this.experienceTillLevelup += 100;
+        (this.scene as GameScene).showLevelUpDialog();
     }
 
     private shootProjectile() {
-        (this.scene as GameScene).gameState.projectiles.add(new Projectile(this.scene as GameScene, this.x + (this.flipX ? -5 : 5), this.y - 9, this.flipX));
+        (this.scene as GameScene).gameState.projectiles.add(
+            new Projectile(this.scene as GameScene, this.x + (this.flipX ? -5 : 5), this.y - 9, this.flipX, this.power)
+        );
     }
 }

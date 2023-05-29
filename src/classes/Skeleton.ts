@@ -80,7 +80,7 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite implements Humanoid {
 
     public applyDamage(damage: number) {
         this.health = this.health - damage;
-        if (this.health < 0) {
+        if (this.health <= 0) {
             this.killSkeleton();
         }
     }

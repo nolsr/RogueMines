@@ -6,11 +6,11 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
     projectileDamage: number;
     isInitialized: boolean;
 
-    constructor(scene: GameScene, x: number, y: number, left: boolean) {
+    constructor(scene: GameScene, x: number, y: number, left: boolean, power: number) {
         super(scene, x, y, 'fistProjectile');
 
         this.projectileSpeed = 80 * (left ? -1 : 1);
-        this.projectileDamage = 35;
+        this.projectileDamage = 30 * power;
 
         this.createAnimations();
 
