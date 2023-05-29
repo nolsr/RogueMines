@@ -5,7 +5,11 @@ import { Player } from '../classes/Player';
 import { Skeleton } from '../classes/Skeleton';
 import { Projectile } from '../classes/Projectile';
 import { ExperienceOrb } from '../classes/ExperienceOrb';
+<<<<<<< HEAD
 import { LevelUpOverlay } from './LevelUpOverlay';
+=======
+import { GuiScene } from './Gui';
+>>>>>>> 4ff3064d4fd17a380a0b5944282ed7c41348e60e
 
 export class GameScene extends Phaser.Scene {
 
@@ -14,7 +18,7 @@ export class GameScene extends Phaser.Scene {
     keyboard: any;
 
     constructor() {
-        super("GameScene");
+        super('GameScene');
     }
     init(gameWindowData: GameWindowData) {
         this.view = gameWindowData;
@@ -58,10 +62,14 @@ export class GameScene extends Phaser.Scene {
         this.sound.add('music', { mute: true, volume: 0.05, rate: 1, loop: true }).play();
 
         // UI
+        this.scene.add('GuiScene', new GuiScene(), true);
         this.gameState.levelbar = this.add.image(this.view.width / 2, this.view.height - 10, 'levelbar').setDepth(15);
         this.gameState.levelbarOriginX = this.add.image(this.view.width / 2 - this.gameState.levelbar.width / 2 + 4,
-            this.view.height - 10, 'levelbarProgressCircle').setDepth(15).x;
+        this.view.height - 10, 'levelbarProgressCircle').setDepth(15).x;
         this.gameState.levelProgress = this.add.tileSprite(this.gameState.levelbarOriginX, this.view.height - 10, 0, 2, 'levelbarProgress').setOrigin(0, 0.5).setDepth(15);
+
+        this.add.text(30, this.view.height - 15, 'Level: 1', { color: '#ccc', fontFamily: 'pzim', fontSize: '10px' }).setOrigin(0, 1).setDepth(15);
+
 
         this.keyboard = this.input.keyboard!.addKeys({ up: 'W', left: 'A', down: 'S', right: 'D', space: 'SPACE' });
     }

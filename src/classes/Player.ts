@@ -36,6 +36,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
         this.setOrigin(0.5, 1)
         this.setCollideWorldBounds(true);
         this.setDepth(10);
+        // this.setScale(5);
     }
 
     private createAnimations() {
