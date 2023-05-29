@@ -5,11 +5,7 @@ import { Player } from '../classes/Player';
 import { Skeleton } from '../classes/Skeleton';
 import { Projectile } from '../classes/Projectile';
 import { ExperienceOrb } from '../classes/ExperienceOrb';
-<<<<<<< HEAD
 import { LevelUpOverlay } from './LevelUpOverlay';
-=======
-import { GuiScene } from './Gui';
->>>>>>> 4ff3064d4fd17a380a0b5944282ed7c41348e60e
 
 export class GameScene extends Phaser.Scene {
 
@@ -62,7 +58,6 @@ export class GameScene extends Phaser.Scene {
         this.sound.add('music', { mute: true, volume: 0.05, rate: 1, loop: true }).play();
 
         // UI
-        this.scene.add('GuiScene', new GuiScene(), true);
         this.gameState.levelbar = this.add.image(this.view.width / 2, this.view.height - 10, 'levelbar').setDepth(15);
         this.gameState.levelbarOriginX = this.add.image(this.view.width / 2 - this.gameState.levelbar.width / 2 + 4,
         this.view.height - 10, 'levelbarProgressCircle').setDepth(15).x;
