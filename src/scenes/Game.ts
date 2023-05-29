@@ -12,6 +12,7 @@ export class GameScene extends Phaser.Scene {
     public gameState: GameState;
     view: GameWindowData;
     keyboard: any;
+    levelText: Phaser.GameObjects.Text;
 
     constructor() {
         super('GameScene');
@@ -63,8 +64,7 @@ export class GameScene extends Phaser.Scene {
         this.view.height - 10, 'levelbarProgressCircle').setDepth(15).x;
         this.gameState.levelProgress = this.add.tileSprite(this.gameState.levelbarOriginX, this.view.height - 10, 0, 2, 'levelbarProgress').setOrigin(0, 0.5).setDepth(15);
 
-        this.add.text(30, this.view.height - 15, 'Level: 1', { color: '#ccc', fontFamily: 'pzim', fontSize: '10px' }).setOrigin(0, 1).setDepth(15);
-
+        this.levelText = this.add.text(this.view.width / 2, this.view.height - 15, '1', { color: '#ccc', fontFamily: 'pzim', fontSize: '10px' }).setOrigin(0.5, 1).setDepth(15);
 
         this.keyboard = this.input.keyboard!.addKeys({ up: 'W', left: 'A', down: 'S', right: 'D', space: 'SPACE' });
     }

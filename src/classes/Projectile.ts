@@ -10,7 +10,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, 'fistProjectile');
 
         this.projectileSpeed = 80 * (left ? -1 : 1);
-        this.projectileDamage = 30 * power;
+        this.projectileDamage = 100 * power;
 
         this.createAnimations();
 
