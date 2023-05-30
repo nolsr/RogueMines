@@ -14,6 +14,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
     attacking: boolean;
     attackCooldown: number;
     power: number;
+    critChance: number;
 
     constructor(scene: GameScene, x: number, y: number) {
         super(scene, x, y, 'player');
@@ -25,6 +26,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
         this.experienceTillLevelup = 100;
         this.level = 1;
         this.power = 1;
+        this.critChance = 0;
 
         this.createAnimations();
 
@@ -36,7 +38,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
         this.setOrigin(0.5, 1)
         this.setCollideWorldBounds(true);
         this.setDepth(10);
-        // this.setScale(5);
     }
 
     private createAnimations() {
@@ -125,8 +126,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
     }
 
     private shootProjectile() {
+        const multiplier = Math.random() < this.critChance ? this.power * 2 : this.power; // Apply critical damage
         (this.scene as GameScene).gameState.projectiles.add(
-            new Projectile(this.scene as GameScene, this.x + (this.flipX ? -5 : 5), this.y - 9, this.flipX, this.power)
+            new Projectile(this.scene as GameScene, this.x + (this.flipX ? -5 : 5), this.y - 9, this.flipX, multiplier)
         );
     }
 }
