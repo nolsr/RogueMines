@@ -81,7 +81,7 @@ export class Card extends Phaser.GameObjects.Image {
 
     private generatepowerUpValue(): number {
         const minPercentage = 5;
-        const maxPercentage = 30;
+        const maxPercentage = 25;
 
         const randomValue = Math.random();
 

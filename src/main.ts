@@ -2,7 +2,6 @@ import 'phaser';
 import { GameScene } from './scenes/Game';
 import { GameWindowData } from './types/GameWindowData';
 import { FaviconAnimater } from './classes/FaviconAnimater';
-import { LevelUpOverlay } from './scenes/LevelUpOverlay';
 
 const WebFontConfig = {
     custom: {

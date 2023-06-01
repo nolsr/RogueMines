@@ -85,6 +85,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
         this.setVelocityY(this.speed * multiplier);
     }
 
+    public move(velocityX: number, velocityY: number) {
+        const adjustedSpeed = velocityX !== 0 && velocityY !== 0 ? this.speed / Math.sqrt(2) : this.speed;
+        this.setVelocity(velocityX * adjustedSpeed, velocityY * adjustedSpeed);
+    }
+
     public attack() {
         if (this.attackOnCooldown) {
             return;

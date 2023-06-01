@@ -88,21 +88,22 @@ export class GameScene extends Phaser.Scene {
     }
 
     handleUserInput() {
+        let velocityX = 0;
+        let velocityY = 0;
         if (this.keyboard.right.isDown && this.keyboard.left.isUp) {
-            this.gameState.player.moveX(1);
+            velocityX = 1;
         } else if (this.keyboard.left.isDown && this.keyboard.right.isUp) {
-            this.gameState.player.moveX(-1);
-        } else {
-            this.gameState.player.moveX(0);
+            velocityX = -1;
         }
 
         if (this.keyboard.up.isDown && this.keyboard.down.isUp) {
-            this.gameState.player.moveY(-1);
+            velocityY = -1;
         } else if (this.keyboard.down.isDown && this.keyboard.up.isUp) {
-            this.gameState.player.moveY(1);
-        } else {
-            this.gameState.player.moveY(0);
+            velocityY = 1;
         }
+        
+        this.gameState.player.move(velocityX, velocityY);
+
         if (this.keyboard.space.isDown) {
             this.gameState.player.attack();
         }
