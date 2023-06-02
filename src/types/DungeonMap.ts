@@ -1,0 +1,1 @@
+export type DungeonMap = Array<Array<number>>;

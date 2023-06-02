@@ -1,0 +1,28 @@
+export enum TileTypes {
+    BACKGROUND = 0,
+
+    WALL_FLAT = 1,
+    WALL_RIGHT_EDGE = 2,
+    WALL_LEFT_EDGE = 3,
+    WALL_TOP = 4,
+    WALL_FRONT = 5,
+    WALL_FRONT_RIGHT_EDGE = 6,
+    WALL_FRONT_LEFT_EDGE = 7,
+
+    FLOOR = 8,
+    FLOOR_ALT = 9,
+    FLOOR_ALT_2 = 10,
+    FLOOR_ALT_3 = 11,
+
+    FOUNDATION_BOTTOM = 13,
+    FOUNDATION_LEFT = 14,
+    FOUNDATION_RIGHT = 15,
+
+    STAIRS = 16,
+
+    SHADOW_TRIANGLE = 24,
+    SHADOW_CORNER = 25,
+    SHADOW_LEFT = 26,
+    SHADOW_TOP = 27,
+    SHADOW_SMALL_TRIANGLE = 28
+}

@@ -1,7 +1,9 @@
+import { DungeonFloor } from "./DungeonFloor";
 import { Player } from "./Player";
 
 export class GameState {
-    floor: Phaser.GameObjects.TileSprite;
+    currentFloor: DungeonFloor;
+    currentTileMap: Phaser.Tilemaps.Tilemap;
     player: Player;
     enemies: Phaser.Physics.Arcade.Group;
     projectiles: Phaser.Physics.Arcade.Group;
@@ -9,6 +11,7 @@ export class GameState {
     levelbar: Phaser.GameObjects.Image;
     levelProgress: Phaser.GameObjects.TileSprite;
     levelbarOriginX: number;
+    tilemaplayer: Phaser.Tilemaps.TilemapLayer;
 
     constructor() { }
 }

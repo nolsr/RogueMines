@@ -10,13 +10,13 @@ const WebFontConfig = {
     }
 };
 const gameWindowData: GameWindowData = {
-    width: 200,
-    height: 150
+    width: 1250,
+    height: 800
 }
 const config = {
     width: gameWindowData.width,
     height: gameWindowData.height,
-    zoom: 5,
+    zoom: 1,
     parent: 'gameContainer',
     pixelArt: true,
     roundPixels: false,
