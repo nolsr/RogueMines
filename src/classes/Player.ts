@@ -66,7 +66,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
 
     public update() {
         if (this.body?.velocity.x != 0 || this.body?.velocity.y != 0) {
-            this.flipX = this.body!.velocity.x < 0;
+            if (this.body!.velocity.x !== 0) {
+                this.flipX = this.body!.velocity.x < 0;
+            }
             if (!this.attacking) {
                 this.play('playerMoving', true);
             }

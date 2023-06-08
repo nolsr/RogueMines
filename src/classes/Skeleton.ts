@@ -8,6 +8,7 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite implements Humanoid {
     speed: number;
     healthbar: Phaser.GameObjects.TileSprite;
     healthbarBackground: Phaser.GameObjects.TileSprite;
+    isAggroed: boolean;
 
     /**
      * 
@@ -17,6 +18,7 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite implements Humanoid {
         super(scene, x, y, 'skeleton');
         this.maxHealth = this.health = 100;
         this.speed = 25;
+        this.isAggroed = false;
 
         this.createAnimations();
 
@@ -88,17 +90,19 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite implements Humanoid {
     public move(targetX: number, targetY: number) {
         this.updateHealthbar();
 
-        this.flipX = this.x > targetX;
-        if (this.x + 20 >= targetX && this.x - 20 <= targetX && this.y + 20 >= targetY && this.y - 20 <= targetY) {
-            this.play('skeletonStanding', true);
-            this.setVelocity(0, 0);
-            return;
-        } else {
-            this.play('skeletonMoving', true);
+        if (this.isAggroed) {
+            this.flipX = this.x > targetX;
+            if (this.x + 20 >= targetX && this.x - 20 <= targetX && this.y + 20 >= targetY && this.y - 20 <= targetY) {
+                this.play('skeletonStanding', true);
+                this.setVelocity(0, 0);
+                return;
+            } else {
+                this.play('skeletonMoving', true);
+            }
+            const vectorX = targetX - this.x;
+            const vectorY = targetY - this.y;
+            const factor = this.speed / Math.sqrt(vectorX ** 2 + vectorY ** 2);
+            this.setVelocity(factor * vectorX, factor * vectorY);
         }
-        const vectorX = targetX - this.x;
-        const vectorY = targetY - this.y;
-        const factor = this.speed / Math.sqrt(vectorX ** 2 + vectorY ** 2);
-        this.setVelocity(factor * vectorX, factor * vectorY);
     }
 }

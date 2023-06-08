@@ -1,10 +1,12 @@
+import { GameScene } from "../scenes/Game";
 import { DungeonMap } from "../types/DungeonMap";
 import { RoomBounds } from "../types/RoomBounds";
 import { TileTypes } from "../types/Tiles";
+import { Skeleton } from "./Skeleton";
 import { randomBetween } from "./utils";
 
 const retries = 15;
-const marginX = 4;
+const marginX = 5;
 const marginY = 7;
 
 export class Room {
@@ -13,9 +15,11 @@ export class Room {
     width: number;
     height: number;
     failedToPlace: boolean;
+    scene: GameScene;
 
-    constructor(map: DungeonMap) {
+    constructor(map: DungeonMap, scene: GameScene) {
         this.failedToPlace = false;
+        this.scene = scene;
 
         this.map = map;
         this.generateRoom();
@@ -47,8 +51,10 @@ export class Room {
         this.bounds = {
             xStart,
             xEnd: xStart + this.width,
+            centerX: Math.min(xStart + this.width / 2),
             yStart,
-            yEnd: yStart + this.height
+            yEnd: yStart + this.height,
+            centerY: Math.min(yStart + this.height / 2)
         }
     }
 
@@ -57,7 +63,7 @@ export class Room {
         const xMax = xStart + this.width + marginX > this.map.length ? this.map.length : xStart + this.width + marginX;
         const yMin = yStart - marginY < 0 ? 0 : yStart - marginY;
         const yMax = yStart + this.height + marginY > this.map.length ? this.map.length : yStart + this.height + marginY;
-    
+
         for (let x = xMin; x < xMax; x++) {
             for (let y = yMin; y < yMax; y++) {
                 if (this.map[y][x] === TileTypes.FLOOR) {
@@ -129,31 +135,18 @@ export class Room {
         }
     }
 
-    public buildCorridorTo(room: Room) {
-        const midX = Math.floor(this.bounds.xStart + this.width / 2);
-        const midY = Math.floor(this.bounds.yStart + this.height / 2);
-        const targetMidX = Math.floor(room.bounds.xStart + room.width / 2);
-        let targetMidY = Math.floor(room.bounds.yStart + room.height / 2);
-        const deltaX = Math.abs(midX - targetMidX);
-        const deltaY = Math.abs(midY - targetMidY);
-        const incrementX = midX - targetMidX < 0;
-        const incrementY = midY - targetMidY < 0;
+    public placeStairs() {
+        const x = this.bounds.xStart + randomBetween(0, this.width);
+        const y = this.bounds.yStart + randomBetween(0, this.height);
+        this.map[y][x] = TileTypes.STAIRS;
+    }
 
-        if (targetMidY == this.bounds.yStart) {
-            targetMidY++;
-        } else if (targetMidY == this.bounds.yEnd) {
-            targetMidY--;
-        }
-
-        for (let i = 0; i < deltaY + 2; i++) {
-            this.map[midY + (incrementY ? i : -i)][midX - 1] = TileTypes.FLOOR;
-            this.map[midY + (incrementY ? i : -i)][midX] = TileTypes.FLOOR;
-            this.map[midY + (incrementY ? i : -i)][midX + 1] = TileTypes.FLOOR;
-        }
-        for (let i = 0; i < deltaX + 2; i++) {
-            this.map[targetMidY - 1][midX + (incrementX ? i : -i)] = TileTypes.FLOOR;
-            this.map[targetMidY][midX + (incrementX ? i : -i)] = TileTypes.FLOOR;
-            this.map[targetMidY + 1][midX + (incrementX ? i : -i)] = TileTypes.FLOOR;
+    public spawnEnemies() {
+        const enemyCount = Math.round(this.width * this.height / 100);
+        for (let i = 0; i < enemyCount; i++) {
+            (this.scene as GameScene).gameState.enemies.add(
+                new Skeleton(this.scene, randomBetween(this.bounds.xStart + 1, this.bounds.xEnd - 1) * 8, randomBetween(this.bounds.yStart + 2, this.bounds.yEnd - 2) * 8)
+            );
         }
     }
 }

@@ -38,24 +38,22 @@ export class GameScene extends Phaser.Scene {
         this.load.image('levelbarProgress', '../assets/LevelbarProgress.png');
         this.load.image('xpDrop', '../assets/ExperienceDrop.png');
 
-        this.load.tilemapTiledJSON('tilemap', '../assets/tilemap/tileset.json');
-
         this.load.audio('music', '../assets/audio/background_music.mp3');
     }
 
     create() {
-        // Tilemap
-        this.generateFloor();
-        
-        const spawnRoom = this.gameState.currentFloor.rooms[0];
-        this.gameState.player = new Player(this, (spawnRoom.bounds.xStart + spawnRoom.width / 2) * 8, (spawnRoom.bounds.yStart + spawnRoom.height / 2) * 8);
-        
-        this.physics.world.enable(this.gameState.player);
-        this.physics.add.collider(this.gameState.player, this.gameState.tilemaplayer as Phaser.Tilemaps.TilemapLayer);
-        
         this.gameState.enemies = this.physics.add.group();
         this.gameState.projectiles = this.physics.add.group();
         this.gameState.entities = this.physics.add.group();
+
+        // Tilemap
+        this.generateFloor();
+
+        const spawnRoom = this.gameState.currentFloor.rooms[0];
+        this.gameState.player = new Player(this, (spawnRoom.bounds.xStart + spawnRoom.width / 2) * 8, (spawnRoom.bounds.yStart + spawnRoom.height / 2) * 8);
+
+        this.physics.world.enable(this.gameState.player);
+        this.physics.add.collider(this.gameState.player, this.gameState.tilemaplayer as Phaser.Tilemaps.TilemapLayer);
 
         this.cameras.main.setBounds(0, 0, this.view.width, this.view.height);
         this.cameras.main.setZoom(5);
@@ -63,25 +61,31 @@ export class GameScene extends Phaser.Scene {
 
         this.physics.add.collider(this.gameState.enemies, this.gameState.enemies);
 
-        this.gameState.enemies.add(new Skeleton(this, 10, 10));
-        this.gameState.enemies.add(new Skeleton(this, 10, this.view.height - 10));
-        this.gameState.enemies.add(new Skeleton(this, this.view.width - 10, 10));
-        this.gameState.enemies.add(new Skeleton(this, this.view.width - 10, this.view.height - 10));
-        this.gameState.enemies.add(new Skeleton(this, this.view.width / 2, 10));
-        this.gameState.enemies.add(new Skeleton(this, this.view.width / 2, this.view.height - 10));
-
         // Sound
         this.sound.add('music', { mute: true, volume: 0.05, rate: 1, loop: true }).play();
 
         // UI
-        this.gameState.levelbar = this.add.image(this.view.width / 2, this.view.height - 10, 'levelbar').setDepth(15);
-        this.gameState.levelbarOriginX = this.add.image(this.view.width / 2 - this.gameState.levelbar.width / 2 + 4,
-        this.view.height - 10, 'levelbarProgressCircle').setDepth(15).x;
-        this.gameState.levelProgress = this.add.tileSprite(this.gameState.levelbarOriginX, this.view.height - 10, 0, 2, 'levelbarProgress').setOrigin(0, 0.5).setDepth(15);
+        this.gameState.levelbar = this.add.image(this.view.width / 2, this.view.height / 2 + 70, 'levelbar')
+            .setDepth(15)
+            .setScrollFactor(0, 0);
+        this.gameState.levelbarOriginX =
+            this.add.image(this.view.width / 2 - this.gameState.levelbar.width / 2 + 4, this.view.height / 2 + 70, 'levelbarProgressCircle')
+                .setDepth(15)
+                .setScrollFactor(0, 0)
+                .x;
+        this.gameState.levelProgress = this.add.tileSprite(this.gameState.levelbarOriginX, this.view.height - 10, 0, 2, 'levelbarProgress')
+            .setOrigin(0, 0.5)
+            .setDepth(15)
+            .setScrollFactor(0, 0);
 
-        this.levelText = this.add.text(this.view.width / 2, this.view.height - 15, '1', { color: '#ccc', fontFamily: 'pzim', fontSize: '10px' }).setOrigin(0.5, 1).setDepth(15);
+        this.levelText = this.add.text(this.view.width / 2, this.view.height / 2 + 65, '1', { color: '#ccc', fontFamily: 'pzim', fontSize: '10px' })
+            .setOrigin(0.5, 1)
+            .setDepth(15)
+            .setScrollFactor(0, 0);
 
-        this.keyboard = this.input.keyboard!.addKeys({ up: 'W', left: 'A', down: 'S', right: 'D', space: 'SPACE' });
+
+        // Controls
+        this.keyboard = this.input.keyboard!.addKeys('W,A,S,D,SPACE');
     }
 
     update() {
@@ -103,7 +107,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     generateFloor() {
-        this.gameState.currentFloor = new DungeonFloor(100);
+        this.gameState.currentFloor = new DungeonFloor(this, 100);
         const mapConfig = {
             data: this.gameState.currentFloor.map,
             tileWidth: 8,
@@ -121,7 +125,10 @@ export class GameScene extends Phaser.Scene {
             TileTypes.WALL_LEFT_EDGE,
             TileTypes.WALL_RIGHT_EDGE,
             TileTypes.WALL_TOP,
-            TileTypes.FOUNDATION_BOTTOM
+            TileTypes.FOUNDATION_BOTTOM,
+            TileTypes.WALL_FRONT,
+            TileTypes.WALL_FRONT_LEFT_EDGE,
+            TileTypes.WALL_FRONT_RIGHT_EDGE
         ];
         this.gameState.currentTileMap.setCollision(unpassableTileIds, true);
     }
@@ -129,22 +136,26 @@ export class GameScene extends Phaser.Scene {
     handleUserInput() {
         let velocityX = 0;
         let velocityY = 0;
-        if (this.keyboard.right.isDown && this.keyboard.left.isUp) {
+        if (this.keyboard.D.isDown && this.keyboard.A.isUp) {
             velocityX = 1;
-        } else if (this.keyboard.left.isDown && this.keyboard.right.isUp) {
+        } else if (this.keyboard.A.isDown && this.keyboard.D.isUp) {
             velocityX = -1;
         }
 
-        if (this.keyboard.up.isDown && this.keyboard.down.isUp) {
+        if (this.keyboard.W.isDown && this.keyboard.S.isUp) {
             velocityY = -1;
-        } else if (this.keyboard.down.isDown && this.keyboard.up.isUp) {
+        } else if (this.keyboard.S.isDown && this.keyboard.W.isUp) {
             velocityY = 1;
         }
-        
+
         this.gameState.player.move(velocityX, velocityY);
 
-        if (this.keyboard.space.isDown) {
+        if (this.keyboard.SPACE.isDown) {
             this.gameState.player.attack();
         }
+    }
+
+    centerUI() {
+        this.gameState.levelbar.setPosition(this.cameras.main.centerX, this.cameras.main.height);
     }
 }

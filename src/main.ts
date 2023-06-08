@@ -3,12 +3,6 @@ import { GameScene } from './scenes/Game';
 import { GameWindowData } from './types/GameWindowData';
 import { FaviconAnimater } from './classes/FaviconAnimater';
 
-const WebFontConfig = {
-    custom: {
-        families: ['pzim'],
-        urls: ['./styles.scss']
-    }
-};
 const gameWindowData: GameWindowData = {
     width: 1250,
     height: 800
@@ -21,6 +15,7 @@ const config = {
     pixelArt: true,
     roundPixels: false,
     antialias: false,
+    backgroundColor: '#171717',
     physics: {
         default: 'arcade',
         arcade: {
