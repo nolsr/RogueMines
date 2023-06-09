@@ -27,6 +27,7 @@ export class Corridor {
         this.generateHorizontalCorridor();
         this.generateVerticalCorridor();
         this.printCorridor();
+        this.decorateCorridor();
     }
 
     private generateHorizontalCorridor() {
@@ -76,6 +77,29 @@ export class Corridor {
             this.map[this.verticalCorridorBounds.yStart + i * faktor][this.verticalCorridorBounds.xStart] = TileTypes.FLOOR;
             this.map[this.verticalCorridorBounds.yStart + i * faktor][this.verticalCorridorBounds.centerX] = TileTypes.FLOOR;
             this.map[this.verticalCorridorBounds.yStart + i * faktor][this.verticalCorridorBounds.xEnd] = TileTypes.FLOOR;
+        }
+    }
+
+    private decorateCorridor() {
+        for (let i = this.horizontalCorridorBounds.xStart; i <= this.horizontalCorridorBounds.xEnd; i++) {
+            if (this.map[this.horizontalCorridorBounds.yEnd + 1][i] === TileTypes.BACKGROUND ||
+                this.map[this.horizontalCorridorBounds.yEnd + 1][i] === TileTypes.FOUNDATION_LEFT ||
+                this.map[this.horizontalCorridorBounds.yEnd + 1][i] === TileTypes.FOUNDATION_RIGHT)
+                this.map[this.horizontalCorridorBounds.yEnd + 1][i] = TileTypes.FOUNDATION_BOTTOM;
+        }
+        for (let i = this.verticalCorridorBounds.yStart > this.verticalCorridorBounds.yEnd ? -2 : 0; i <= Math.abs(this.verticalCorridorBounds.yStart - this.verticalCorridorBounds.yEnd); i++) {
+            const faktor = this.verticalCorridorBounds.yStart > this.verticalCorridorBounds.yEnd ? -1 : 1;
+            if (this.map[this.verticalCorridorBounds.yStart + i * faktor][this.verticalCorridorBounds.xStart - 1] === TileTypes.BACKGROUND) {
+                if (Math.random() < 0.7) {
+                    this.map[this.verticalCorridorBounds.yStart + i * faktor][this.verticalCorridorBounds.xStart - 1] = TileTypes.FOUNDATION_LEFT
+                }
+            }
+
+            if (this.map[this.verticalCorridorBounds.yStart + i * faktor][this.verticalCorridorBounds.xEnd + 1] === TileTypes.BACKGROUND) {
+                if (Math.random() < 0.7) {
+                    this.map[this.verticalCorridorBounds.yStart + i * faktor][this.verticalCorridorBounds.xEnd + 1] = TileTypes.FOUNDATION_RIGHT
+                }
+            }
         }
     }
 }

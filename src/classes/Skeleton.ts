@@ -9,16 +9,18 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite implements Humanoid {
     healthbar: Phaser.GameObjects.TileSprite;
     healthbarBackground: Phaser.GameObjects.TileSprite;
     isAggroed: boolean;
+    spawnedInRoom: number;
 
     /**
      * 
      * @param pos Startingposition of skeltonobject
      */
-    constructor(scene: GameScene, x: number, y: number) {
+    constructor(scene: GameScene, x: number, y: number, spawnedInRoom: number) {
         super(scene, x, y, 'skeleton');
         this.maxHealth = this.health = 100;
         this.speed = 25;
         this.isAggroed = false;
+        this.spawnedInRoom = spawnedInRoom;
 
         this.createAnimations();
 

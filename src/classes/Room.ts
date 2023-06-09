@@ -16,10 +16,13 @@ export class Room {
     height: number;
     failedToPlace: boolean;
     scene: GameScene;
+    playerEntered: boolean;
+    roomIndex: number;
 
     constructor(map: DungeonMap, scene: GameScene) {
         this.failedToPlace = false;
         this.scene = scene;
+        this.playerEntered = false;
 
         this.map = map;
         this.generateRoom();
@@ -141,12 +144,30 @@ export class Room {
         this.map[y][x] = TileTypes.STAIRS;
     }
 
-    public spawnEnemies() {
+    public spawnEnemies(roomIndex: number) {
+        this.roomIndex = roomIndex;
         const enemyCount = Math.round(this.width * this.height / 100);
         for (let i = 0; i < enemyCount; i++) {
             (this.scene as GameScene).gameState.enemies.add(
-                new Skeleton(this.scene, randomBetween(this.bounds.xStart + 1, this.bounds.xEnd - 1) * 8, randomBetween(this.bounds.yStart + 2, this.bounds.yEnd - 2) * 8)
+                new Skeleton(this.scene, randomBetween(this.bounds.xStart + 1, this.bounds.xEnd - 1) * 8, randomBetween(this.bounds.yStart + 2, this.bounds.yEnd - 2) * 8, roomIndex)
             );
         }
+    }
+
+    public onEnterRoom() {
+        if (this.playerEntered) {
+            return;
+        }
+        this.playerEntered = true;
+
+        this.activateEnemies();
+    }
+
+    private activateEnemies() {
+        this.scene.gameState.enemies.getChildren().forEach(e => {
+            if ((e as Skeleton).spawnedInRoom === this.roomIndex) {
+                (e as Skeleton).isAggroed = true;
+            }
+        });
     }
 }
