@@ -73,7 +73,7 @@ export class GameScene extends Phaser.Scene {
                 .setDepth(15)
                 .setScrollFactor(0, 0)
                 .x;
-        this.gameState.levelProgress = this.add.tileSprite(this.gameState.levelbarOriginX, this.view.height - 10, 0, 2, 'levelbarProgress')
+        this.gameState.levelProgress = this.add.tileSprite(this.gameState.levelbarOriginX, this.view.height / 2 + 70, 0, 2, 'levelbarProgress')
             .setOrigin(0, 0.5)
             .setDepth(15)
             .setScrollFactor(0, 0);

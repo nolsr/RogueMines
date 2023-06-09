@@ -37,32 +37,32 @@ export class Card extends Phaser.GameObjects.Image {
     printCardContent() {
         switch (this.type) {
             case UpgradeType.ATTACK_SPEED:
-                this.scene.add.image(this.x, this.y - 10, 'attackSpeedRune').setDepth(2).setScale(5);
+                this.scene.add.image(this.x, this.y - 25, 'attackSpeedRune').setDepth(2).setScale(5);
                 this.scene.add.text(this.x + 1, this.y + 50, 'ATSPD', { font: 'Code', fontSize: '50px', color: 'grey' })
-                    .setOrigin(0.5, 0.5).setDepth(2);
+                    .setOrigin(0.5, 0.5).setDepth(2).setScale(5);
                 this.scene.add.text(this.x + 1, this.y + 20, '+' + this.powerUpValue + '%',
-                    { font: 'Code', fontSize: '50px', color: '#b33831' }).setOrigin(0.5, 0.5).setDepth(2);
+                    { font: 'Code', fontSize: '50px', color: '#b33831' }).setScale(5).setOrigin(0.5, 0.5).setDepth(2);
                 break;
             case UpgradeType.MOVE_SPEED:
-                this.scene.add.image(this.x, this.y - 10, 'moveSpeedRune').setDepth(2).setScale(5);
+                this.scene.add.image(this.x, this.y - 25, 'moveSpeedRune').setDepth(2).setScale(5);
                 this.scene.add.text(this.x + 1, this.y + 50, 'MVSPD', { font: 'Code', fontSize: '50px', color: 'grey' })
-                    .setOrigin(0.5, 0.5).setDepth(2);
+                    .setOrigin(0.5, 0.5).setDepth(2).setScale(5);
                 this.scene.add.text(this.x + 1, this.y + 20, '+' + this.powerUpValue + '%',
-                    { font: 'Code', fontSize: '50px', color: '#b33831' }).setOrigin(0.5, 0.5).setDepth(2);
+                    { font: 'Code', fontSize: '50px', color: '#b33831' }).setScale(5).setOrigin(0.5, 0.5).setDepth(2);
                 break;
             case UpgradeType.DAMAGE:
-                this.scene.add.image(this.x, this.y - 10, 'damageRune').setDepth(2).setScale(5);
+                this.scene.add.image(this.x, this.y - 25, 'damageRune').setDepth(2).setScale(5);
                 this.scene.add.text(this.x + 1, this.y + 50, 'DMG', { font: 'Code', fontSize: '50px', color: 'grey' })
-                    .setOrigin(0.5, 0.5).setDepth(2);
+                    .setOrigin(0.5, 0.5).setDepth(2).setScale(5);
                 this.scene.add.text(this.x + 1, this.y + 20, '+' + this.powerUpValue + '%',
-                    { font: 'Code', fontSize: '50px', color: '#b33831' }).setOrigin(0.5, 0.5).setDepth(2);
+                    { font: 'Code', fontSize: '50px', color: '#b33831' }).setScale(5).setOrigin(0.5, 0.5).setDepth(2);
                 break;
             case UpgradeType.CRIT_CHANCE:
-                this.scene.add.image(this.x, this.y - 10, 'critChanceRune').setDepth(2).setScale(5);
+                this.scene.add.image(this.x, this.y - 25, 'critChanceRune').setDepth(2).setScale(5);
                 this.scene.add.text(this.x + 1, this.y + 50, 'CRIT', { font: 'Code', fontSize: '50px', color: 'grey' })
-                    .setOrigin(0.5, 0.5).setDepth(2);
+                    .setOrigin(0.5, 0.5).setDepth(2).setScale(5);
                 this.scene.add.text(this.x + 1, this.y + 20, '+' + this.powerUpValue + '%',
-                    { font: 'Code', fontSize: '50px', color: '#b33831' }).setOrigin(0.5, 0.5).setDepth(2);
+                    { font: 'Code', fontSize: '50px', color: '#b33831' }).setScale(5).setOrigin(0.5, 0.5).setDepth(2);
                 break;
         }
     }
