@@ -1,6 +1,7 @@
 import { GameScene } from "../scenes/Game";
 import { ExperienceOrb } from "./ExperienceOrb";
 import { Humanoid } from "./Humanoid";
+import { Player } from "./Player";
 
 export class Skeleton extends Phaser.Physics.Arcade.Sprite implements Humanoid {
     health: number;
@@ -28,12 +29,12 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite implements Humanoid {
         scene.physics.add.existing(this);
         this.setSize(9, 13);
         this.setOffset(4, 3);
-        
+
         this.setOrigin(0.5, 1);
         this.setDepth(5);
         this.createHealthbar();
     }
-    
+
     private createAnimations() {
         if (this.scene.anims.exists('skeletonStanding')) {
             return;
@@ -94,17 +95,16 @@ export class Skeleton extends Phaser.Physics.Arcade.Sprite implements Humanoid {
 
         if (this.isAggroed) {
             this.flipX = this.x > targetX;
-            if (this.x + 20 >= targetX && this.x - 20 <= targetX && this.y + 20 >= targetY && this.y - 20 <= targetY) {
-                this.play('skeletonStanding', true);
-                this.setVelocity(0, 0);
-                return;
-            } else {
-                this.play('skeletonMoving', true);
-            }
+            this.play('skeletonMoving', true);
             const vectorX = targetX - this.x;
             const vectorY = targetY - this.y;
             const factor = this.speed / Math.sqrt(vectorX ** 2 + vectorY ** 2);
             this.setVelocity(factor * vectorX, factor * vectorY);
         }
+
+        // Check collision with player
+        this.scene.physics.world.overlap(this, (this.scene as GameScene).gameState.player, (skeleton, player) => {
+            (player as Player).kill();
+        });
     }
 }

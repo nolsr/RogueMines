@@ -138,4 +138,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
             new Projectile(this.scene as GameScene, this.x + (this.flipX ? -5 : 5), this.y - 9, this.flipX, multiplier)
         );
     }
+
+    public kill() {
+        
+    }
 }
