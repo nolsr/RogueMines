@@ -54,7 +54,7 @@ export class DungeonFloor {
 
     private spawnEnemies() {
         for (let i = 1; i < this.rooms.length; i++) {
-            this.rooms[i].spawnEnemies();            
+            this.rooms[i].spawnEnemies(i);            
         }
     }
 }

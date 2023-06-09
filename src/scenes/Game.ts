@@ -54,12 +54,13 @@ export class GameScene extends Phaser.Scene {
 
         this.physics.world.enable(this.gameState.player);
         this.physics.add.collider(this.gameState.player, this.gameState.tilemaplayer as Phaser.Tilemaps.TilemapLayer);
+        this.physics.add.collider(this.gameState.enemies, this.gameState.tilemaplayer as Phaser.Tilemaps.TilemapLayer);
+        this.physics.add.collider(this.gameState.enemies, this.gameState.enemies);
 
         this.cameras.main.setBounds(0, 0, this.view.width, this.view.height);
         this.cameras.main.setZoom(5);
         this.cameras.main.startFollow(this.gameState.player);
 
-        this.physics.add.collider(this.gameState.enemies, this.gameState.enemies);
 
         // Sound
         this.sound.add('music', { mute: true, volume: 0.05, rate: 1, loop: true }).play();
@@ -94,6 +95,24 @@ export class GameScene extends Phaser.Scene {
         this.gameState.enemies.getChildren().forEach(skeleton => (skeleton as Skeleton).move(this.gameState.player.x, this.gameState.player.y));
         this.gameState.projectiles.getChildren().forEach(projectile => (projectile as Projectile).checkCollision());
         this.gameState.entities.getChildren().forEach(entity => (entity as ExperienceOrb).checkPickup());
+        this.checkRoomsEntered();
+        this.checkPlayerOnStairs();
+    }
+
+    checkPlayerOnStairs() {
+        
+    }
+
+    checkRoomsEntered() {
+        this.gameState.currentFloor.rooms.forEach(room => {
+            if (this.gameState.player.x / 8 >= room.bounds.xStart &&
+                this.gameState.player.x / 8 <= room.bounds.xEnd &&
+                this.gameState.player.y / 8 >= room.bounds.yStart &&
+                this.gameState.player.y / 8 <= room.bounds.yEnd) {
+                    room.onEnterRoom();
+            }
+            
+        });
     }
 
     showLevelUpDialog() {
@@ -126,6 +145,8 @@ export class GameScene extends Phaser.Scene {
             TileTypes.WALL_RIGHT_EDGE,
             TileTypes.WALL_TOP,
             TileTypes.FOUNDATION_BOTTOM,
+            TileTypes.FOUNDATION_LEFT,
+            TileTypes.FOUNDATION_RIGHT,
             TileTypes.WALL_FRONT,
             TileTypes.WALL_FRONT_LEFT_EDGE,
             TileTypes.WALL_FRONT_RIGHT_EDGE
