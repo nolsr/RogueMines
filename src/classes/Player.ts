@@ -1,4 +1,5 @@
 import { GameScene } from "../scenes/Game";
+import { PlayerData } from "../types/PlayerData";
 import { Humanoid } from "./Humanoid";
 import { Projectile } from "./Projectile";
 
@@ -16,17 +17,16 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
     power: number;
     critChance: number;
 
-    constructor(scene: GameScene, x: number, y: number) {
+    constructor(scene: GameScene, x: number, y: number, playerData: PlayerData) {
         super(scene, x, y, 'player');
-        this.maxHealth = this.health = 100;
-        this.speed = 75;
+        this.speed = playerData.speed;
         this.attackOnCooldown = false;
-        this.attackCooldown = 500;
-        this.experience = 0;
-        this.experienceTillLevelup = 100;
-        this.level = 1;
-        this.power = 1;
-        this.critChance = 0;
+        this.attackCooldown = playerData.attackCooldown;
+        this.experience = playerData.experience;
+        this.experienceTillLevelup = playerData.experienceTillLevelup;
+        this.level = playerData.level;
+        this.power = playerData.power;
+        this.critChance = playerData.critChance;
 
         this.createAnimations();
 
@@ -140,6 +140,18 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
     }
 
     public kill() {
-        
+
+    }
+
+    public getPlayerData(): PlayerData {
+        return {
+            speed: this.speed,
+            experience: this.experience,
+            experienceTillLevelup: this.experienceTillLevelup,
+            level: this.level,
+            attackCooldown: this.attackCooldown,
+            power: this.power,
+            critChance: this.critChance
+        };
     }
 }

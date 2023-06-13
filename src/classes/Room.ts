@@ -1,6 +1,7 @@
 import { GameScene } from "../scenes/Game";
 import { DungeonMap } from "../types/DungeonMap";
 import { RoomBounds } from "../types/RoomBounds";
+import { StairCoords } from "../types/StairCoords";
 import { TileTypes } from "../types/Tiles";
 import { Skeleton } from "./Skeleton";
 import { randomBetween } from "./utils";
@@ -138,10 +139,11 @@ export class Room {
         }
     }
 
-    public placeStairs() {
+    public placeStairs(): StairCoords {
         const x = this.bounds.xStart + randomBetween(0, this.width);
         const y = this.bounds.yStart + randomBetween(0, this.height);
         this.map[y][x] = TileTypes.STAIRS;
+        return {x, y};
     }
 
     public spawnEnemies(roomIndex: number) {

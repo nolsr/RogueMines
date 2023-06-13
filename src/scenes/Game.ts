@@ -8,6 +8,7 @@ import { ExperienceOrb } from '../classes/ExperienceOrb';
 import { LevelUpOverlay } from './LevelUpOverlay';
 import { DungeonFloor } from '../classes/DungeonFloor';
 import { TileTypes } from '../types/Tiles';
+import { FloorData } from '../types/FloorData';
 
 export class GameScene extends Phaser.Scene {
 
@@ -15,13 +16,32 @@ export class GameScene extends Phaser.Scene {
     view: GameWindowData;
     keyboard: any;
     levelText: Phaser.GameObjects.Text;
+    floorData: FloorData;
 
     constructor() {
         super('GameScene');
     }
-    init(gameWindowData: GameWindowData) {
-        this.view = gameWindowData;
+    init(args: any) {
+        this.view = args[0];
         this.gameState = new GameState();
+        console.log(args[0], args[1]);
+        if (args[1]) {
+            this.floorData = args[1];
+        } else {
+            this.floorData = {
+                floor: 1,
+                playerData: {
+                    speed: 50,
+                    experience: 0,
+                    experienceTillLevelup: 100,
+                    level: 1,
+                    attackCooldown: 500,
+                    power: 1,
+                    critChance: 0
+                },
+                enemyScaling: 1
+            }
+        }
     }
 
     preload() {
@@ -50,15 +70,16 @@ export class GameScene extends Phaser.Scene {
         this.generateFloor();
 
         const spawnRoom = this.gameState.currentFloor.rooms[0];
-        this.gameState.player = new Player(this, (spawnRoom.bounds.xStart + spawnRoom.width / 2) * 8, (spawnRoom.bounds.yStart + spawnRoom.height / 2) * 8);
-
+        this.gameState.player = new Player(this, (spawnRoom.bounds.xStart + spawnRoom.width / 2) * 8, (spawnRoom.bounds.yStart + spawnRoom.height / 2) * 8, this.floorData.playerData);
+        
         this.physics.world.enable(this.gameState.player);
         this.physics.add.collider(this.gameState.player, this.gameState.tilemaplayer as Phaser.Tilemaps.TilemapLayer);
         this.physics.add.collider(this.gameState.enemies, this.gameState.tilemaplayer as Phaser.Tilemaps.TilemapLayer);
+        this.physics.add.collider(this.gameState.projectiles, this.gameState.tilemaplayer as Phaser.Tilemaps.TilemapLayer, (a) => a.destroy());
         this.physics.add.collider(this.gameState.enemies, this.gameState.enemies);
 
         this.cameras.main.setBounds(0, 0, this.view.width, this.view.height);
-        // this.cameras.main.setZoom(5);
+        this.cameras.main.setZoom(5);
         this.cameras.main.startFollow(this.gameState.player);
 
 
@@ -79,11 +100,12 @@ export class GameScene extends Phaser.Scene {
             .setDepth(15)
             .setScrollFactor(0, 0);
 
-        this.levelText = this.add.text(this.view.width / 2, this.view.height / 2 + 65, '1', { color: '#ccc', fontFamily: 'pzim', fontSize: '10px' })
+        this.levelText = this.add.text(this.view.width / 2, this.view.height / 2 + 65, this.gameState.player.level.toString(),
+            { color: '#ccc', fontFamily: 'pzim', fontSize: '10px' })
             .setOrigin(0.5, 1)
             .setDepth(15)
             .setScrollFactor(0, 0);
-
+        this.gameState.player.gainExperience(0); // To update the levelbar when the second floor is entered
 
         // Controls
         this.keyboard = this.input.keyboard!.addKeys('W,A,S,D,SPACE');
@@ -100,7 +122,16 @@ export class GameScene extends Phaser.Scene {
     }
 
     checkPlayerOnStairs() {
-        
+        if (Math.round(this.gameState.player.x / 8) == this.gameState.currentFloor.stairCoords.x
+            && Math.round(this.gameState.player.y / 8) == this.gameState.currentFloor.stairCoords.y) {
+            this.scene.stop(this);
+
+            this.floorData.enemyScaling += 0.2;
+            this.floorData.playerData = this.gameState.player.getPlayerData();
+            this.floorData.floor++;
+
+            this.scene.start('GameScene', [this.view, this.floorData]);
+        }
     }
 
     checkRoomsEntered() {
@@ -109,9 +140,8 @@ export class GameScene extends Phaser.Scene {
                 this.gameState.player.x / 8 <= room.bounds.xEnd &&
                 this.gameState.player.y / 8 >= room.bounds.yStart &&
                 this.gameState.player.y / 8 <= room.bounds.yEnd) {
-                    room.onEnterRoom();
+                room.onEnterRoom();
             }
-            
         });
     }
 

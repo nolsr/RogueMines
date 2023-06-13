@@ -27,4 +27,4 @@ const config = {
 
 new FaviconAnimater(document.getElementById('favicon'));
 const game = new Phaser.Game(config);
-game.scene.start('GameScene', gameWindowData);
+game.scene.start('GameScene', [gameWindowData]);
