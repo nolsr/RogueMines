@@ -30,7 +30,7 @@ export class GameScene extends Phaser.Scene {
         this.load.spritesheet('floor', '../assets/FloorTile.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('fistProjectile', '../assets/FistProjectile.png', { frameWidth: 8, frameHeight: 4 });
 
-        this.load.image('tileset', '../assets/tilemap/tileset.png');
+        this.load.image('tileset', '../assets/tilemap/extruded.png');
         this.load.image('healthbarBG', '../assets/HealthbarBackground.png');
         this.load.image('healthbarFG', '../assets/HealthbarForeground.png');
         this.load.image('levelbar', '../assets/Levelbar.png');
@@ -58,7 +58,7 @@ export class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.gameState.enemies, this.gameState.enemies);
 
         this.cameras.main.setBounds(0, 0, this.view.width, this.view.height);
-        // this.cameras.main.setZoom(5);
+        this.cameras.main.setZoom(5);
         this.cameras.main.startFollow(this.gameState.player);
 
 
@@ -135,7 +135,7 @@ export class GameScene extends Phaser.Scene {
             height: this.gameState.currentFloor.size
         };
         this.gameState.currentTileMap = this.make.tilemap(mapConfig);
-        const tiles = this.gameState.currentTileMap.addTilesetImage('tileset');
+        const tiles = this.gameState.currentTileMap.addTilesetImage('tileset', 'tileset', 8, 8, 1, 2);
         this.gameState.tilemaplayer = this.gameState.currentTileMap.createLayer(0, tiles as Phaser.Tilemaps.Tileset, 0, 0) as Phaser.Tilemaps.TilemapLayer;
 
         const unpassableTileIds = [
