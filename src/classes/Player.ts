@@ -1,9 +1,8 @@
 import { GameScene } from "../scenes/Game";
 import { PlayerData } from "../types/PlayerData";
-import { Humanoid } from "./Humanoid";
 import { Projectile } from "./Projectile";
 
-export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
+export class Player extends Phaser.Physics.Arcade.Sprite {
     health: number;
     maxHealth: number;
     speed: number;
@@ -16,6 +15,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
     attackCooldown: number;
     power: number;
     critChance: number;
+    gameScene: GameScene;
 
     constructor(scene: GameScene, x: number, y: number, playerData: PlayerData) {
         super(scene, x, y, 'player');
@@ -27,6 +27,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
         this.level = playerData.level;
         this.power = playerData.power;
         this.critChance = playerData.critChance;
+        this.gameScene = scene;
 
         this.createAnimations();
 
@@ -43,7 +44,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
     private createAnimations() {
         this.scene.anims.create({
             key: 'playerMoving',
-            frames: this.scene.anims.generateFrameNumbers('player', { start: 1, end: 6 }),
+            frames: this.scene.anims.generateFrameNumbers('playerNew', { start: 0, end: 7 }),
             frameRate: 13,
             repeat: -1,
             hideOnComplete: false
@@ -117,7 +118,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
                 this.levelUp();
             }
         }
-        (this.scene as GameScene).updateLevelbar(this.experience / this.experienceTillLevelup);
+        this.gameScene.updateLevelbar(this.experience / this.experienceTillLevelup);
     }
 
     private handleAccessExperience(): boolean {
@@ -127,20 +128,20 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
 
     private levelUp() {
         this.level++;
-        this.experience = 0;
+        this.experience = this.experience - this.experienceTillLevelup;
         this.experienceTillLevelup += 100;
-        (this.scene as GameScene).showLevelUpDialog();
+        this.gameScene.showLevelUpDialog();
     }
 
     private shootProjectile() {
         const multiplier = Math.random() < this.critChance ? this.power * 2 : this.power; // Apply critical damage
-        (this.scene as GameScene).gameState.projectiles.add(
-            new Projectile(this.scene as GameScene, this.x + (this.flipX ? -5 : 5), this.y - 9, this.flipX, multiplier)
+        this.gameScene.gameState.projectiles.add(
+            new Projectile(this.gameScene, this.x + (this.flipX ? -5 : 5), this.y - 9, this.flipX, multiplier)
         );
     }
 
-    public kill() {
-
+    public onDeath() {
+        this.gameScene.showDeathScreen();
     }
 
     public getPlayerData(): PlayerData {

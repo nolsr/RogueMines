@@ -2,13 +2,14 @@ import 'phaser';
 import { GameState } from '../classes/GameState';
 import { GameWindowData } from '../types/GameWindowData';
 import { Player } from '../classes/Player';
-import { Skeleton } from '../classes/Skeleton';
 import { Projectile } from '../classes/Projectile';
 import { ExperienceOrb } from '../classes/ExperienceOrb';
 import { LevelUpOverlay } from './LevelUpOverlay';
 import { DungeonFloor } from '../classes/DungeonFloor';
 import { TileTypes } from '../types/Tiles';
 import { FloorData } from '../types/FloorData';
+import { GameOverOverlay } from './GameOverOverlay';
+import { Enemy } from '../classes/Enemy';
 
 export class GameScene extends Phaser.Scene {
 
@@ -17,6 +18,10 @@ export class GameScene extends Phaser.Scene {
     keyboard: any;
     levelText: Phaser.GameObjects.Text;
     floorData: FloorData;
+    music: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+    levelUpSound: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+    deathSound: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+    mute: boolean;
 
     constructor() {
         super('GameScene');
@@ -24,6 +29,7 @@ export class GameScene extends Phaser.Scene {
     init(args: any) {
         this.view = args[0];
         this.gameState = new GameState();
+        this.mute = true;
         console.log(args[0], args[1]);
         if (args[1]) {
             this.floorData = args[1];
@@ -46,7 +52,9 @@ export class GameScene extends Phaser.Scene {
 
     preload() {
         this.load.spritesheet('player', '../assets/PlayerSprite.png', { frameWidth: 16, frameHeight: 16 });
+        this.load.spritesheet('playerNew', '../assets/PlayerSpriteNew.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('skeleton', '../assets/SkeletonSprite.png', { frameWidth: 16, frameHeight: 16 });
+        this.load.spritesheet('ghost', '../assets/GhostSprite.png', { frameWidth: 7, frameHeight: 10 });
         this.load.spritesheet('floor', '../assets/FloorTile.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('fistProjectile', '../assets/FistProjectile.png', { frameWidth: 8, frameHeight: 4 });
 
@@ -59,10 +67,13 @@ export class GameScene extends Phaser.Scene {
         this.load.image('xpDrop', '../assets/ExperienceDrop.png');
 
         this.load.audio('music', '../assets/audio/background_music.mp3');
+        this.load.audio('deathSound', '../assets/audio/death.mp3');
+        this.load.audio('levelUpSound', '../assets/audio/upgrade.mp3');
     }
 
     create() {
         this.gameState.enemies = this.physics.add.group();
+        this.gameState.enemiesUnaffectedByWalls = this.physics.add.group();
         this.gameState.projectiles = this.physics.add.group();
         this.gameState.entities = this.physics.add.group();
 
@@ -84,7 +95,10 @@ export class GameScene extends Phaser.Scene {
 
 
         // Sound
-        this.sound.add('music', { mute: true, volume: 0.05, rate: 1, loop: true }).play();
+        this.music = this.sound.add('music', { mute: this.mute, volume: 0.05, rate: 1, loop: true });
+        this.levelUpSound = this.sound.add('levelUpSound', { mute: this.mute, volume: 0.1, rate: 1, loop: false });
+        this.deathSound = this.sound.add('deathSound', { mute: this.mute, volume: 0.05, rate: 1, loop: false });
+        this.music.play();
 
         // UI
         this.gameState.levelbar = this.add.image(this.view.width / 2, this.view.height / 2 + 70, 'levelbar')
@@ -114,7 +128,8 @@ export class GameScene extends Phaser.Scene {
     update() {
         this.handleUserInput();
         this.gameState.player.update();
-        this.gameState.enemies.getChildren().forEach(skeleton => (skeleton as Skeleton).move(this.gameState.player.x, this.gameState.player.y));
+        this.gameState.enemies.getChildren().forEach(enemy => (enemy as Enemy).update());
+        this.gameState.enemiesUnaffectedByWalls.getChildren().forEach(enemy => (enemy as Enemy).update());
         this.gameState.projectiles.getChildren().forEach(projectile => (projectile as Projectile).checkCollision());
         this.gameState.entities.getChildren().forEach(entity => (entity as ExperienceOrb).checkPickup());
         this.checkRoomsEntered();
@@ -122,8 +137,9 @@ export class GameScene extends Phaser.Scene {
     }
 
     checkPlayerOnStairs() {
-        if (Math.round(this.gameState.player.x / 8) == this.gameState.currentFloor.stairCoords.x
-            && Math.round(this.gameState.player.y / 8) == this.gameState.currentFloor.stairCoords.y) {
+        if (Math.floor(this.gameState.player.x / 8) == this.gameState.currentFloor.stairCoords.x &&
+        Math.floor(this.gameState.player.y / 8) == this.gameState.currentFloor.stairCoords.y) {
+            this.music.stop();
             this.scene.stop(this);
 
             this.floorData.enemyScaling += 0.2;
@@ -146,6 +162,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     showLevelUpDialog() {
+        this.levelUpSound.play();
         this.scene.pause();
         this.game.scene.add('levelUpOverlay', new LevelUpOverlay(this), true);
     }
@@ -208,5 +225,17 @@ export class GameScene extends Phaser.Scene {
 
     centerUI() {
         this.gameState.levelbar.setPosition(this.cameras.main.centerX, this.cameras.main.height);
+    }
+    
+    showDeathScreen() {
+        this.deathSound.play();
+        this.music.stop();
+        this.scene.pause();
+        this.game.scene.add('GameOverOverlay', new GameOverOverlay(this), true);
+    }
+
+    restart() {
+        this.scene.stop(this);
+        this.scene.start('GameScene', [this.view]);
     }
 }

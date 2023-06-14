@@ -20,9 +20,6 @@ export class LevelUpOverlay extends Phaser.Scene {
         this.selectedCard = -1;
     }
 
-    init() {
-    }
-
     preload() {
         this.load.image('card', '../assets/Card.png');
         this.load.image('cardOutline', '../assets/CardOutline.png');
@@ -49,10 +46,6 @@ export class LevelUpOverlay extends Phaser.Scene {
         this.input.on('gameobjectover', this.hoverCard.bind(this));
         this.input.on('gameobjectout', this.unselectCards.bind(this));
         this.input.on('gameobjectdown', this.selectCard.bind(this));
-    }
-
-    update() {
-
     }
 
     hoverCard(pointer: any, card: Card) {

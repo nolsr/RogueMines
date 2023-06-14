@@ -2,37 +2,38 @@ import { GameScene } from "../scenes/Game";
 import { Enemy } from "./Enemy";
 import { ExperienceOrb } from "./ExperienceOrb";
 
-export class Skeleton extends Enemy {
+export class Ghost extends Enemy {
+    aggroRange: number;
+
     constructor(scene: GameScene, x: number, y: number, spawnedInRoom: number) {
-        super(scene, x, y, spawnedInRoom, 'skeleton', 25, 100, 50);
-        this.setSize(9, 13);
-        this.setOffset(4, 3);
+        super(scene, x, y, spawnedInRoom, 'ghost', 35, 75, 75);
+        this.aggroRange = 250;
     }
 
     createAnimations() {
-        if (this.scene.anims.exists('skeletonStanding')) {
+        if (this.scene.anims.exists('ghost')) {
             return;
         }
         this.scene.anims.create({
-            key: 'skeletonStanding',
-            frames: this.scene.anims.generateFrameNumbers('skeleton', { start: 0, end: 0 }),
+            key: 'ghost',
+            frames: this.scene.anims.generateFrameNumbers('ghost', { start: 0, end: 0 }),
             frameRate: 1,
             repeat: -1,
             hideOnComplete: false
         });
-        this.scene.anims.create({
-            key: 'skeletonMoving',
-            frames: this.scene.anims.generateFrameNumbers('skeleton', { start: 1, end: 7 }),
-            frameRate: 10,
-            repeat: -1,
-            hideOnComplete: false
-        });
     }
 
-    public move(targetX: number, targetY: number) {
+    move(targetX: number, targetY: number) {
+        if (!this.isAggroed) {
+            const distanceToPlayer = Phaser.Math.Distance.Between(this.x, this.y, targetX, targetY);
+            if (distanceToPlayer <= this.aggroRange) {
+                this.isAggroed = true;
+            }
+        }
+
         if (this.isAggroed) {
             this.flipX = this.x > targetX;
-            this.play('skeletonMoving', true);
+            this.play('ghost', true);
             const vectorX = targetX - this.x;
             const vectorY = targetY - this.y;
             const factor = this.speed / Math.sqrt(vectorX ** 2 + vectorY ** 2);

@@ -7,7 +7,7 @@ const gameWindowData: GameWindowData = {
     width: 1250,
     height: 800
 }
-const config = {
+const config: Phaser.Types.Core.GameConfig = {
     width: gameWindowData.width,
     height: gameWindowData.height,
     zoom: 1,

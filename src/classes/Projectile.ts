@@ -1,13 +1,16 @@
 import { GameScene } from "../scenes/Game";
+import { Enemy } from "./Enemy";
 import { Skeleton } from "./Skeleton";
 
 export class Projectile extends Phaser.Physics.Arcade.Sprite {
     projectileSpeed: number;
     projectileDamage: number;
     isInitialized: boolean;
+    gameScene: GameScene;
 
     constructor(scene: GameScene, x: number, y: number, left: boolean, power: number) {
         super(scene, x, y, 'fistProjectile');
+        this.gameScene = scene;
 
         this.projectileSpeed = 80 * (left ? -1 : 1);
         this.projectileDamage = 50 * power;
@@ -38,9 +41,13 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
         if (!this.isInitialized) {
             this.setVelocityX(this.projectileSpeed);
             this.isInitialized = true;
-        } 
-        this.scene.physics.world.overlap(this, (this.scene as GameScene).gameState.enemies, (a, b) => {
-            (b as Skeleton).applyDamage((a as Projectile).projectileDamage);
+        }
+        this.gameScene.physics.world.overlap(this, this.gameScene.gameState.enemies, (a, b) => {
+            (b as Enemy).applyDamage((a as Projectile).projectileDamage);
+            a.destroy();
+        });
+        this.gameScene.physics.world.overlap(this, this.gameScene.gameState.enemiesUnaffectedByWalls, (a, b) => {
+            (b as Enemy).applyDamage((a as Projectile).projectileDamage);
             a.destroy();
         });
     }

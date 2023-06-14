@@ -6,6 +6,7 @@ export class GameState {
     currentTileMap: Phaser.Tilemaps.Tilemap;
     player: Player;
     enemies: Phaser.Physics.Arcade.Group;
+    enemiesUnaffectedByWalls: Phaser.Physics.Arcade.Group;
     projectiles: Phaser.Physics.Arcade.Group;
     entities: Phaser.Physics.Arcade.Group;
     levelbar: Phaser.GameObjects.Image;
