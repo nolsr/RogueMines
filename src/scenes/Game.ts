@@ -55,10 +55,9 @@ export class GameScene extends Phaser.Scene {
         this.load.spritesheet('playerNew', '../assets/PlayerSpriteNew.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('skeleton', '../assets/SkeletonSprite.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('ghost', '../assets/GhostSprite.png', { frameWidth: 7, frameHeight: 10 });
-        this.load.spritesheet('floor', '../assets/FloorTile.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('fistProjectile', '../assets/FistProjectile.png', { frameWidth: 8, frameHeight: 4 });
 
-        this.load.image('tileset', '../assets/tilemap/extruded.png');
+        this.load.image('tileset', '../assets/tilemap/tilemap.png');
         this.load.image('healthbarBG', '../assets/HealthbarBackground.png');
         this.load.image('healthbarFG', '../assets/HealthbarForeground.png');
         this.load.image('levelbar', '../assets/Levelbar.png');
@@ -86,7 +85,7 @@ export class GameScene extends Phaser.Scene {
         this.physics.world.enable(this.gameState.player);
         this.physics.add.collider(this.gameState.player, this.gameState.tilemaplayer as Phaser.Tilemaps.TilemapLayer);
         this.physics.add.collider(this.gameState.enemies, this.gameState.tilemaplayer as Phaser.Tilemaps.TilemapLayer);
-        this.physics.add.collider(this.gameState.projectiles, this.gameState.tilemaplayer as Phaser.Tilemaps.TilemapLayer, (a) => a.destroy());
+        this.physics.add.collider(this.gameState.projectiles, this.gameState.tilemaplayer as Phaser.Tilemaps.TilemapLayer, (a) => (a as Projectile).destroyProjectile());
         this.physics.add.collider(this.gameState.enemies, this.gameState.enemies);
 
         this.cameras.main.setBounds(0, 0, this.view.width, this.view.height);

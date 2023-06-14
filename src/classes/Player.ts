@@ -46,7 +46,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         (this.scene.renderer as Phaser.Renderer.WebGL.WebGLRenderer).pipelines.add('skewQuad', new SkewQuad(this.scene.game));
         this.shadow = this.scene.add.sprite(x, y, 'player');
         this.shadowScaleY = 0.8;
-        this.shadow.y = this.shadow.y + (this.shadow.height * (1 - this.shadowScaleY)) / 2;
         this.shadow.scaleY = this.shadowScaleY;
         this.shadow.tint = 0x000000;
         this.shadow.alpha = 0.5;
