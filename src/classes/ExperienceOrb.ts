@@ -4,9 +4,9 @@ import { Player } from "./Player";
 export class ExperienceOrb extends Phaser.Physics.Arcade.Sprite {
     experienceValue: number;
 
-    constructor(scene: GameScene, x: number, y: number) {
+    constructor(scene: GameScene, x: number, y: number, value: number) {
         super(scene, x, y, 'xpDrop');
-        this.experienceValue = 50;
+        this.experienceValue = value;
 
 
         scene.add.existing(this);

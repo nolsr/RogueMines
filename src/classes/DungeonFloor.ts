@@ -1,5 +1,6 @@
 import { GameScene } from "../scenes/Game";
 import { DungeonMap } from "../types/DungeonMap";
+import { StairCoords } from "../types/StairCoords";
 import { TileTypes } from "../types/Tiles";
 import { Corridor } from "./Corridor";
 import { Room } from "./Room";
@@ -13,6 +14,7 @@ export class DungeonFloor {
     level: number;
     map: DungeonMap;
     scene: GameScene;
+    stairCoords: StairCoords;
 
     constructor(scene: GameScene, size: number, level: number = 0) {
         this.scene = scene;
@@ -76,7 +78,7 @@ export class DungeonFloor {
     }
 
     private placeStairs() {
-        this.rooms[randomBetween(1, this.rooms.length - 1)].placeStairs();
+        this.stairCoords = this.rooms[randomBetween(1, this.rooms.length - 1)].placeStairs();
     }
 
     private spawnEnemies() {

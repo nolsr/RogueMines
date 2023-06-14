@@ -7,7 +7,7 @@ const gameWindowData: GameWindowData = {
     width: 1250,
     height: 800
 }
-const config = {
+const config: Phaser.Types.Core.GameConfig = {
     width: gameWindowData.width,
     height: gameWindowData.height,
     zoom: 1,
@@ -27,4 +27,4 @@ const config = {
 
 new FaviconAnimater(document.getElementById('favicon'));
 const game = new Phaser.Game(config);
-game.scene.start('GameScene', gameWindowData);
+game.scene.start('GameScene', [gameWindowData]);

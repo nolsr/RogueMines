@@ -1,8 +1,9 @@
 import { GameScene } from "../scenes/Game";
-import { Humanoid } from "./Humanoid";
+import SkewQuad from "../shaders/SkewQuad";
+import { PlayerData } from "../types/PlayerData";
 import { Projectile } from "./Projectile";
 
-export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
+export class Player extends Phaser.Physics.Arcade.Sprite {
     health: number;
     maxHealth: number;
     speed: number;
@@ -15,18 +16,21 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
     attackCooldown: number;
     power: number;
     critChance: number;
+    gameScene: GameScene;
+    shadow: Phaser.GameObjects.Sprite;
+    shadowScaleY: number;
 
-    constructor(scene: GameScene, x: number, y: number) {
+    constructor(scene: GameScene, x: number, y: number, playerData: PlayerData) {
         super(scene, x, y, 'player');
-        this.maxHealth = this.health = 100;
-        this.speed = 75;
+        this.speed = playerData.speed;
         this.attackOnCooldown = false;
-        this.attackCooldown = 500;
-        this.experience = 0;
-        this.experienceTillLevelup = 100;
-        this.level = 1;
-        this.power = 1;
-        this.critChance = 0;
+        this.attackCooldown = playerData.attackCooldown;
+        this.experience = playerData.experience;
+        this.experienceTillLevelup = playerData.experienceTillLevelup;
+        this.level = playerData.level;
+        this.power = playerData.power;
+        this.critChance = playerData.critChance;
+        this.gameScene = scene;
 
         this.createAnimations();
 
@@ -38,12 +42,23 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
         this.setOrigin(0.5, 1)
         this.setCollideWorldBounds(true);
         this.setDepth(10);
+
+        (this.scene.renderer as Phaser.Renderer.WebGL.WebGLRenderer).pipelines.add('skewQuad', new SkewQuad(this.scene.game));
+        this.shadow = this.scene.add.sprite(x, y, 'player');
+        this.shadowScaleY = 0.8;
+        this.shadow.y = this.shadow.y + (this.shadow.height * (1 - this.shadowScaleY)) / 2;
+        this.shadow.scaleY = this.shadowScaleY;
+        this.shadow.tint = 0x000000;
+        this.shadow.alpha = 0.5;
+        this.shadow.setPipeline('skewQuad');
+        this.shadow.pipeline.set1f('inHorizontalSkew', 0.2);
+        this.shadow.setOrigin(0.5, 1);
     }
 
     private createAnimations() {
         this.scene.anims.create({
             key: 'playerMoving',
-            frames: this.scene.anims.generateFrameNumbers('player', { start: 1, end: 6 }),
+            frames: this.scene.anims.generateFrameNumbers('playerNew', { start: 0, end: 7 }),
             frameRate: 13,
             repeat: -1,
             hideOnComplete: false
@@ -65,16 +80,22 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
     }
 
     public update() {
+        this.shadow.x = this.x + 6;
+        this.shadow.y = this.y;
+
         if (this.body?.velocity.x != 0 || this.body?.velocity.y != 0) {
             if (this.body!.velocity.x !== 0) {
                 this.flipX = this.body!.velocity.x < 0;
+                this.shadow.flipX = this.flipX;
             }
             if (!this.attacking) {
                 this.play('playerMoving', true);
+                this.shadow.play('playerMoving', true);
             }
         } else {
             if (!this.attacking) {
                 this.play('playerStanding', true);
+                this.shadow.play('playerStanding', true);
             }
         }
     }
@@ -117,7 +138,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
                 this.levelUp();
             }
         }
-        (this.scene as GameScene).updateLevelbar(this.experience / this.experienceTillLevelup);
+        this.gameScene.updateLevelbar(this.experience / this.experienceTillLevelup);
     }
 
     private handleAccessExperience(): boolean {
@@ -127,19 +148,31 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements Humanoid {
 
     private levelUp() {
         this.level++;
-        this.experience = 0;
+        this.experience = this.experience - this.experienceTillLevelup;
         this.experienceTillLevelup += 100;
-        (this.scene as GameScene).showLevelUpDialog();
+        this.gameScene.showLevelUpDialog();
     }
 
     private shootProjectile() {
         const multiplier = Math.random() < this.critChance ? this.power * 2 : this.power; // Apply critical damage
-        (this.scene as GameScene).gameState.projectiles.add(
-            new Projectile(this.scene as GameScene, this.x + (this.flipX ? -5 : 5), this.y - 9, this.flipX, multiplier)
+        this.gameScene.gameState.projectiles.add(
+            new Projectile(this.gameScene, this.x + (this.flipX ? -5 : 5), this.y - 9, this.flipX, multiplier)
         );
     }
 
-    public kill() {
-        
+    public onDeath() {
+        this.gameScene.showDeathScreen();
+    }
+
+    public getPlayerData(): PlayerData {
+        return {
+            speed: this.speed,
+            experience: this.experience,
+            experienceTillLevelup: this.experienceTillLevelup,
+            level: this.level,
+            attackCooldown: this.attackCooldown,
+            power: this.power,
+            critChance: this.critChance
+        };
     }
 }

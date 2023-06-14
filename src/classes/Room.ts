@@ -1,7 +1,10 @@
 import { GameScene } from "../scenes/Game";
 import { DungeonMap } from "../types/DungeonMap";
 import { RoomBounds } from "../types/RoomBounds";
+import { StairCoords } from "../types/StairCoords";
 import { TileTypes } from "../types/Tiles";
+import { Enemy } from "./Enemy";
+import { Ghost } from "./Ghost";
 import { Skeleton } from "./Skeleton";
 import { randomBetween } from "./utils";
 
@@ -15,13 +18,13 @@ export class Room {
     width: number;
     height: number;
     failedToPlace: boolean;
-    scene: GameScene;
+    gameScene: GameScene;
     playerEntered: boolean;
     roomIndex: number;
 
     constructor(map: DungeonMap, scene: GameScene) {
         this.failedToPlace = false;
-        this.scene = scene;
+        this.gameScene = scene;
         this.playerEntered = false;
 
         this.map = map;
@@ -138,18 +141,24 @@ export class Room {
         }
     }
 
-    public placeStairs() {
+    public placeStairs(): StairCoords {
         const x = this.bounds.xStart + randomBetween(0, this.width);
         const y = this.bounds.yStart + randomBetween(0, this.height);
         this.map[y][x] = TileTypes.STAIRS;
+        return {x, y};
     }
 
     public spawnEnemies(roomIndex: number) {
         this.roomIndex = roomIndex;
         const enemyCount = Math.round(this.width * this.height / 100);
         for (let i = 0; i < enemyCount; i++) {
-            (this.scene as GameScene).gameState.enemies.add(
-                new Skeleton(this.scene, randomBetween(this.bounds.xStart + 1, this.bounds.xEnd - 1) * 8, randomBetween(this.bounds.yStart + 2, this.bounds.yEnd - 2) * 8, roomIndex)
+            this.gameScene.gameState.enemies.add(
+                new Skeleton(this.gameScene, randomBetween(this.bounds.xStart + 1, this.bounds.xEnd - 1) * 8, randomBetween(this.bounds.yStart + 2, this.bounds.yEnd - 2) * 8, roomIndex)
+            );
+        }
+        if (Math.random() > 0.35) {
+            this.gameScene.gameState.enemiesUnaffectedByWalls.add(
+                new Ghost(this.gameScene, randomBetween(this.bounds.xStart + 1, this.bounds.xEnd - 1) * 8, randomBetween(this.bounds.yStart + 2, this.bounds.yEnd - 2) * 8, roomIndex)
             );
         }
     }
@@ -164,9 +173,9 @@ export class Room {
     }
 
     private activateEnemies() {
-        this.scene.gameState.enemies.getChildren().forEach(e => {
-            if ((e as Skeleton).spawnedInRoom === this.roomIndex) {
-                (e as Skeleton).isAggroed = true;
+        this.gameScene.gameState.enemies.getChildren().forEach(e => {
+            if ((e as Enemy).spawnedInRoom === this.roomIndex) {
+                (e as Enemy).isAggroed = true;
             }
         });
     }
