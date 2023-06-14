@@ -12,6 +12,8 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
     spawnedInRoom: number;
     gameScene: GameScene;
     experienceValue: number;
+    shadow: Phaser.GameObjects.Sprite;
+    shadowScaleY: number;
 
     constructor(scene: GameScene, x: number, y: number, spawnedInRoom: number, type: string, speed: number, health: number, experienceValue: number) {
         super(scene, x, y, type);
@@ -21,6 +23,7 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.isAggroed = false;
         this.spawnedInRoom = spawnedInRoom;
         this.experienceValue = experienceValue;
+        this.shadowScaleY = 0.8;
 
         this.createAnimations();
 
@@ -35,8 +38,8 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
     abstract createAnimations(): any;
 
     private createHealthbar() {
-        this.healthbarBackground = this.scene.add.tileSprite(this.x, this.y + 1, 8, 1, 'healthbarBG');
-        this.healthbar = this.scene.add.tileSprite(this.x - 4, this.y + 1, 3, 1, 'healthbarFG');
+        this.healthbarBackground = this.gameScene.add.tileSprite(this.x, this.y + 1, 8, 1, 'healthbarBG');
+        this.healthbar = this.gameScene.add.tileSprite(this.x - 4, this.y + 1, 3, 1, 'healthbarFG');
         this.healthbar.setOrigin(0, 0.5);
         this.healthbar.setDepth(5);
         this.healthbarBackground.setDepth(4);
@@ -59,7 +62,7 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     private generateDrops() {
-        (this.scene as GameScene).gameState.entities.add(new ExperienceOrb(this.scene as GameScene, this.x, this.y, this.experienceValue));
+        this.gameScene.gameState.entities.add(new ExperienceOrb(this.scene as GameScene, this.x, this.y, this.experienceValue));
     }
 
     public applyDamage(damage: number) {

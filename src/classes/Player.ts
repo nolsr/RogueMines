@@ -1,4 +1,5 @@
 import { GameScene } from "../scenes/Game";
+import SkewQuad from "../shaders/SkewQuad";
 import { PlayerData } from "../types/PlayerData";
 import { Projectile } from "./Projectile";
 
@@ -16,6 +17,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     power: number;
     critChance: number;
     gameScene: GameScene;
+    shadow: Phaser.GameObjects.Sprite;
+    shadowScaleY: number;
 
     constructor(scene: GameScene, x: number, y: number, playerData: PlayerData) {
         super(scene, x, y, 'player');
@@ -39,6 +42,17 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.setOrigin(0.5, 1)
         this.setCollideWorldBounds(true);
         this.setDepth(10);
+
+        (this.scene.renderer as Phaser.Renderer.WebGL.WebGLRenderer).pipelines.add('skewQuad', new SkewQuad(this.scene.game));
+        this.shadow = this.scene.add.sprite(x, y, 'player');
+        this.shadowScaleY = 0.8;
+        this.shadow.y = this.shadow.y + (this.shadow.height * (1 - this.shadowScaleY)) / 2;
+        this.shadow.scaleY = this.shadowScaleY;
+        this.shadow.tint = 0x000000;
+        this.shadow.alpha = 0.5;
+        this.shadow.setPipeline('skewQuad');
+        this.shadow.pipeline.set1f('inHorizontalSkew', 0.2);
+        this.shadow.setOrigin(0.5, 1);
     }
 
     private createAnimations() {
@@ -66,16 +80,22 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     public update() {
+        this.shadow.x = this.x + 6;
+        this.shadow.y = this.y;
+
         if (this.body?.velocity.x != 0 || this.body?.velocity.y != 0) {
             if (this.body!.velocity.x !== 0) {
                 this.flipX = this.body!.velocity.x < 0;
+                this.shadow.flipX = this.flipX;
             }
             if (!this.attacking) {
                 this.play('playerMoving', true);
+                this.shadow.play('playerMoving', true);
             }
         } else {
             if (!this.attacking) {
                 this.play('playerStanding', true);
+                this.shadow.play('playerStanding', true);
             }
         }
     }

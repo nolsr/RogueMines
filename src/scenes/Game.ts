@@ -93,7 +93,6 @@ export class GameScene extends Phaser.Scene {
         this.cameras.main.setZoom(5);
         this.cameras.main.startFollow(this.gameState.player);
 
-
         // Sound
         this.music = this.sound.add('music', { mute: this.mute, volume: 0.05, rate: 1, loop: true });
         this.levelUpSound = this.sound.add('levelUpSound', { mute: this.mute, volume: 0.1, rate: 1, loop: false });

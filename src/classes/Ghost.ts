@@ -1,6 +1,5 @@
 import { GameScene } from "../scenes/Game";
 import { Enemy } from "./Enemy";
-import { ExperienceOrb } from "./ExperienceOrb";
 
 export class Ghost extends Enemy {
     aggroRange: number;

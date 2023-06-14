@@ -1,6 +1,5 @@
 import { GameScene } from "../scenes/Game";
 import { Enemy } from "./Enemy";
-import { ExperienceOrb } from "./ExperienceOrb";
 
 export class Skeleton extends Enemy {
     constructor(scene: GameScene, x: number, y: number, spawnedInRoom: number) {
