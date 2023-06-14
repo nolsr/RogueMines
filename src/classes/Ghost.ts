@@ -6,7 +6,7 @@ export class Ghost extends Enemy {
 
     constructor(scene: GameScene, x: number, y: number, spawnedInRoom: number) {
         super(scene, x, y, spawnedInRoom, 'ghost', 35, 75, 75);
-        this.aggroRange = 250;
+        this.aggroRange = 150;
     }
 
     createAnimations() {
@@ -15,8 +15,8 @@ export class Ghost extends Enemy {
         }
         this.scene.anims.create({
             key: 'ghost',
-            frames: this.scene.anims.generateFrameNumbers('ghost', { start: 0, end: 0 }),
-            frameRate: 1,
+            frames: this.scene.anims.generateFrameNumbers('ghost', { start: 0, end: 5 }),
+            frameRate: 10,
             repeat: -1,
             hideOnComplete: false
         });

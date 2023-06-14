@@ -5,6 +5,7 @@ import { StairCoords } from "../types/StairCoords";
 import { TileTypes } from "../types/Tiles";
 import { Enemy } from "./Enemy";
 import { Ghost } from "./Ghost";
+import { Knight } from "./Knight";
 import { Skeleton } from "./Skeleton";
 import { randomBetween } from "./utils";
 
@@ -145,18 +146,24 @@ export class Room {
         const x = this.bounds.xStart + randomBetween(0, this.width);
         const y = this.bounds.yStart + randomBetween(0, this.height);
         this.map[y][x] = TileTypes.STAIRS;
-        return {x, y};
+        return { x, y };
     }
 
     public spawnEnemies(roomIndex: number) {
         this.roomIndex = roomIndex;
         const enemyCount = Math.round(this.width * this.height / 100);
         for (let i = 0; i < enemyCount; i++) {
-            this.gameScene.gameState.enemies.add(
-                new Skeleton(this.gameScene, randomBetween(this.bounds.xStart + 1, this.bounds.xEnd - 1) * 8, randomBetween(this.bounds.yStart + 2, this.bounds.yEnd - 2) * 8, roomIndex)
-            );
+            if (Math.random() > 0.1) {
+                this.gameScene.gameState.enemies.add(
+                    new Knight(this.gameScene, randomBetween(this.bounds.xStart + 3, this.bounds.xEnd - 3) * 8, randomBetween(this.bounds.yStart + 4, this.bounds.yEnd - 4) * 8, roomIndex)
+                );
+            } else {
+                this.gameScene.gameState.enemies.add(
+                    new Skeleton(this.gameScene, randomBetween(this.bounds.xStart + 1, this.bounds.xEnd - 1) * 8, randomBetween(this.bounds.yStart + 2, this.bounds.yEnd - 2) * 8, roomIndex)
+                );
+            }
         }
-        if (Math.random() > 0.35) {
+        if (Math.random() < 0.6) {
             this.gameScene.gameState.enemiesUnaffectedByWalls.add(
                 new Ghost(this.gameScene, randomBetween(this.bounds.xStart + 1, this.bounds.xEnd - 1) * 8, randomBetween(this.bounds.yStart + 2, this.bounds.yEnd - 2) * 8, roomIndex)
             );
