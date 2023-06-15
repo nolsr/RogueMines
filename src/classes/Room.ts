@@ -7,6 +7,7 @@ import { Enemy } from "./Enemy";
 import { Ghost } from "./Ghost";
 import { Knight } from "./Knight";
 import { Skeleton } from "./Skeleton";
+import { Slime } from "./Slime";
 import { randomBetween } from "./utils";
 
 const retries = 15;
@@ -144,7 +145,7 @@ export class Room {
 
     public placeStairs(): StairCoords {
         const x = this.bounds.xStart + randomBetween(0, this.width);
-        const y = this.bounds.yStart + randomBetween(0, this.height);
+        const y = this.bounds.yStart + randomBetween(1, this.height);
         this.map[y][x] = TileTypes.STAIRS;
         return { x, y };
     }
@@ -153,9 +154,14 @@ export class Room {
         this.roomIndex = roomIndex;
         const enemyCount = Math.round(this.width * this.height / 100);
         for (let i = 0; i < enemyCount; i++) {
-            if (Math.random() > 0.1) {
+            const enemySelector = Math.random() * this.gameScene.floorData.enemyScaling;
+            if (enemySelector > 0.9) {
                 this.gameScene.gameState.enemies.add(
                     new Knight(this.gameScene, randomBetween(this.bounds.xStart + 3, this.bounds.xEnd - 3) * 8, randomBetween(this.bounds.yStart + 4, this.bounds.yEnd - 4) * 8, roomIndex)
+                );
+            } else if (enemySelector > 0.3) {
+                this.gameScene.gameState.enemies.add(
+                    new Slime(this.gameScene, randomBetween(this.bounds.xStart + 1, this.bounds.xEnd - 1) * 8, randomBetween(this.bounds.yStart + 2, this.bounds.yEnd - 2) * 8, roomIndex)
                 );
             } else {
                 this.gameScene.gameState.enemies.add(
