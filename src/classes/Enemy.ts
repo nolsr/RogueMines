@@ -1,4 +1,5 @@
 import { GameScene } from "../scenes/Game";
+import { Chest } from "./Chest";
 import { ExperienceOrb } from "./ExperienceOrb";
 import { Player } from "./Player";
 
@@ -61,7 +62,7 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.destroy();
     }
 
-    private generateDrops() {
+    protected generateDrops() {
         this.gameScene.gameState.entities.add(new ExperienceOrb(this.scene as GameScene, this.x, this.y, this.experienceValue));
     }
 
@@ -78,7 +79,10 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.move(this.gameScene.gameState.player.x, this.gameScene.gameState.player.y);
         this.updateHealthbar();
 
-        this.scene.physics.world.overlap(this, (this.scene as GameScene).gameState.player, (skeleton, player) => {
+        this.scene.physics.world.overlap(this, (this.scene as GameScene).gameState.player, (obj, player) => {
+            if (obj instanceof Chest) {
+                return;
+            }
             (player as Player).onDeath();
         });
 

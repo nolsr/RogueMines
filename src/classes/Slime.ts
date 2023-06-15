@@ -4,6 +4,8 @@ import { Enemy } from "./Enemy";
 export class Slime extends Enemy {
     constructor(scene: GameScene, x: number, y: number, spawnedInRoom: number) {
         super(scene, x, y, spawnedInRoom, 'slime', 20, 55, 35);
+        this.setSize(8, 6);
+        this.setOffset(0, 2);
     }
 
     createAnimations() {

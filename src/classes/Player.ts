@@ -36,8 +36,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        this.setSize(10, 14);
-        this.setOffset(3, 2);
+        this.setSize(8, 10);
+        this.setOffset(4, 6);
 
         this.setOrigin(0.5, 1)
         this.setCollideWorldBounds(true);

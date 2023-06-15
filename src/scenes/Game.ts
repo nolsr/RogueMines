@@ -57,6 +57,7 @@ export class GameScene extends Phaser.Scene {
         this.load.spritesheet('knight', '../assets/KnightSprite.png', { frameWidth: 20, frameHeight: 20});
         this.load.spritesheet('slime', '../assets/SlimeSprite.png', { frameWidth: 8, frameHeight: 8});
         this.load.spritesheet('ghost', '../assets/GhostSprite.png', { frameWidth: 7, frameHeight: 10 });
+        this.load.spritesheet('chest', '../assets/Chest.png', { frameWidth: 8, frameHeight: 8 });
         this.load.spritesheet('fistProjectile', '../assets/FistProjectile.png', { frameWidth: 8, frameHeight: 4 });
 
         this.load.image('tileset', '../assets/tilemap/tilemap.png');

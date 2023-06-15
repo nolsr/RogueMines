@@ -7,6 +7,8 @@ export class Ghost extends Enemy {
     constructor(scene: GameScene, x: number, y: number, spawnedInRoom: number) {
         super(scene, x, y, spawnedInRoom, 'ghost', 35, 75, 75);
         this.aggroRange = 150;
+        this.setSize(5, 7);
+        this.setOffset(1, 1);
     }
 
     createAnimations() {

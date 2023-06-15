@@ -3,6 +3,7 @@ import { DungeonMap } from "../types/DungeonMap";
 import { RoomBounds } from "../types/RoomBounds";
 import { StairCoords } from "../types/StairCoords";
 import { TileTypes } from "../types/Tiles";
+import { Chest } from "./Chest";
 import { Enemy } from "./Enemy";
 import { Ghost } from "./Ghost";
 import { Knight } from "./Knight";
@@ -169,9 +170,15 @@ export class Room {
                 );
             }
         }
-        if (Math.random() < 0.6) {
+        const roll = Math.random();
+        if (roll > 0.4) {
             this.gameScene.gameState.enemiesUnaffectedByWalls.add(
                 new Ghost(this.gameScene, randomBetween(this.bounds.xStart + 1, this.bounds.xEnd - 1) * 8, randomBetween(this.bounds.yStart + 2, this.bounds.yEnd - 2) * 8, roomIndex)
+            );
+        }
+        if(roll > 0.9) {
+            this.gameScene.gameState.enemies.add(
+                new Chest(this.gameScene, randomBetween(this.bounds.xStart + 1, this.bounds.xEnd - 1) * 8, randomBetween(this.bounds.yStart + 2, this.bounds.yEnd - 2) * 8, roomIndex)
             );
         }
     }
