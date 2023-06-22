@@ -53,12 +53,15 @@ export class GameScene extends Phaser.Scene {
     preload() {
         this.load.spritesheet('player', '../assets/PlayerSprite.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('playerNew', '../assets/PlayerSpriteNew.png', { frameWidth: 16, frameHeight: 16 });
+        this.load.spritesheet('playerDown', '../assets/PlayerSpriteDown.png', { frameWidth: 16, frameHeight: 16 });
+        this.load.spritesheet('playerUp', '../assets/PlayerSpriteUp.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('skeleton', '../assets/SkeletonSprite.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('knight', '../assets/KnightSprite.png', { frameWidth: 20, frameHeight: 20});
         this.load.spritesheet('slime', '../assets/SlimeSprite.png', { frameWidth: 8, frameHeight: 8});
         this.load.spritesheet('ghost', '../assets/GhostSprite.png', { frameWidth: 7, frameHeight: 10 });
         this.load.spritesheet('chest', '../assets/Chest.png', { frameWidth: 8, frameHeight: 8 });
         this.load.spritesheet('fistProjectile', '../assets/FistProjectile.png', { frameWidth: 8, frameHeight: 4 });
+        this.load.spritesheet('fistProjectileCritical', '../assets/FistProjectileCritical.png', { frameWidth: 8, frameHeight: 4 });
 
         this.load.image('tileset', '../assets/tilemap/tilemap.png');
         this.load.image('healthbarBG', '../assets/HealthbarBackground.png');

@@ -1,5 +1,6 @@
 import { GameScene } from "../scenes/Game";
 import SkewQuad from "../shaders/SkewQuad";
+import { Direction } from "../types/Direction";
 import { PlayerData } from "../types/PlayerData";
 import { Projectile } from "./Projectile";
 
@@ -55,6 +56,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     private createAnimations() {
+        if (this.scene.anims.exists('playerMoving')) {
+            return;
+        }
         this.scene.anims.create({
             key: 'playerMoving',
             frames: this.scene.anims.generateFrameNumbers('playerNew', { start: 0, end: 7 }),
@@ -76,6 +80,20 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             repeat: -1,
             hideOnComplete: false
         });
+        this.scene.anims.create({
+            key: 'playerMovingDown',
+            frames: this.scene.anims.generateFrameNumbers('playerDown', { start: 1, end: 10 }),
+            frameRate: 20,
+            repeat: -1,
+            hideOnComplete: false
+        });
+        this.scene.anims.create({
+            key: 'playerMovingUp',
+            frames: this.scene.anims.generateFrameNumbers('playerUp', { start: 1, end: 10 }),
+            frameRate: 20,
+            repeat: -1,
+            hideOnComplete: false
+        });
     }
 
     public update() {
@@ -88,8 +106,18 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.shadow.flipX = this.flipX;
             }
             if (!this.attacking) {
-                this.play('playerMoving', true);
-                this.shadow.play('playerMoving', true);
+                if (this.body?.velocity.x === 0 && this.body.velocity.y !== 0) {
+                    if (this.body.velocity.y > 0) {
+                        this.play('playerMovingDown', true);
+                        this.shadow.play('playerMovingDown', true);
+                    } else {
+                        this.play('playerMovingUp', true);
+                        this.shadow.play('playerMovingUp', true);
+                    }
+                } else {
+                    this.play('playerMoving', true);
+                    this.shadow.play('playerMoving', true);
+                }
             }
         } else {
             if (!this.attacking) {
@@ -153,9 +181,16 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     private shootProjectile() {
-        const multiplier = Math.random() < this.critChance ? this.power * 2 : this.power; // Apply critical damage
+        let direction: Direction = Direction.UP;
+        if (this.body?.velocity.x === 0 && this.body.velocity.y === 0) {
+            direction = this.flipX ? Direction.LEFT : Direction.RIGHT;
+        } else if (this.body?.velocity.x === 0) {
+            direction = this.body.velocity.y > 0 ? Direction.DOWN : Direction.UP;
+        } else {
+            direction = this.body!.velocity.x > 0 ? Direction.RIGHT : Direction.LEFT;
+        }
         this.gameScene.gameState.projectiles.add(
-            new Projectile(this.gameScene, this.x + (this.flipX ? -5 : 5), this.y - 9, this.flipX, multiplier)
+            new Projectile(this.gameScene, this.x, this.y, direction, this.power, Math.random() < this.critChance)
         );
     }
 
