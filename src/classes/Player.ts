@@ -20,6 +20,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     gameScene: GameScene;
     shadow: Phaser.GameObjects.Sprite;
     shadowScaleY: number;
+    projectileSpeed: number;
 
     constructor(scene: GameScene, x: number, y: number, playerData: PlayerData) {
         super(scene, x, y, 'player');
@@ -32,6 +33,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.power = playerData.power;
         this.critChance = playerData.critChance;
         this.gameScene = scene;
+        this.projectileSpeed = playerData.projectileSpeed;
 
         this.createAnimations();
 
@@ -190,7 +192,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             direction = this.body!.velocity.x > 0 ? Direction.RIGHT : Direction.LEFT;
         }
         this.gameScene.gameState.projectiles.add(
-            new Projectile(this.gameScene, this.x, this.y, direction, this.power, Math.random() < this.critChance)
+            new Projectile(this.gameScene, this.x, this.y, direction, this.power, this.projectileSpeed, Math.random() < this.critChance)
         );
     }
 
@@ -206,7 +208,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             level: this.level,
             attackCooldown: this.attackCooldown,
             power: this.power,
-            critChance: this.critChance
+            critChance: this.critChance,
+            projectileSpeed: this.projectileSpeed
         };
     }
 }

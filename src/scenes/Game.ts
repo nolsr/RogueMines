@@ -43,7 +43,8 @@ export class GameScene extends Phaser.Scene {
                     level: 1,
                     attackCooldown: 500,
                     power: 1,
-                    critChance: 0
+                    critChance: 0,
+                    projectileSpeed: 1
                 },
                 enemyScaling: 1
             }

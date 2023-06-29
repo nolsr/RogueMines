@@ -64,6 +64,13 @@ export class Card extends Phaser.GameObjects.Image {
                 this.scene.add.text(this.x + 1, this.y + 100, '+' + this.powerUpValue + '%',
                     { font: 'Code', fontSize: '50px', color: '#b33831' }).setScale(5).setOrigin(0.5, 0.5).setDepth(2);
                 break;
+            case UpgradeType.PROJ_SPEED:
+                this.scene.add.image(this.x, this.y - 50, 'projectileSpeedRune').setDepth(2).setScale(5);
+                this.scene.add.text(this.x + 1, this.y + 40, 'PJSPD', { font: 'Code', fontSize: '50px', color: 'grey' })
+                    .setOrigin(0.5, 0.5).setDepth(2).setScale(5);
+                this.scene.add.text(this.x + 1, this.y + 100, '+' + this.powerUpValue + '%',
+                    { font: 'Code', fontSize: '50px', color: '#b33831' }).setScale(5).setOrigin(0.5, 0.5).setDepth(2);
+                break;
         }
     }
 
@@ -81,6 +88,8 @@ export class Card extends Phaser.GameObjects.Image {
             case UpgradeType.CRIT_CHANCE:
                 player.critChance += this.powerUpValue / 100;
                 break;
+            case UpgradeType.PROJ_SPEED:
+                player.projectileSpeed = player.projectileSpeed * (1 + this.powerUpValue / 100);
         }
     }
 
