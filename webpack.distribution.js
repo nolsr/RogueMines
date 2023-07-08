@@ -8,12 +8,12 @@ module.exports = {
     entry: {
 
         // this is our entry point, the main JavaScript file
-        app: './src/main.js',
+        app: './src/main.ts',
     },
     output: {
 
         // this is our output file, the one which bundles all libraries
-        filename: 'main.ts',
+        filename: 'main.js',
 
         // and this is the path of the output bundle, "dist" folder
         path: path.resolve(__dirname, 'dist'),
@@ -38,8 +38,13 @@ module.exports = {
                     context: 'src/'
                 },
                 {
-                    // every file inside src/assets folder
-                    from: 'assets/*',
+                    // src/assets folderw
+                    from: 'assets',
+                    context: 'src/',
+                    to: 'assets'
+                },
+                {
+                    from: 'styles.scss',
                     context: 'src/'
                 }
             ]

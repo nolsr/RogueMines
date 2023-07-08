@@ -141,7 +141,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     public attack() {
-        if (this.attackOnCooldown) {
+        if (this.attackOnCooldown || this.attacking) {
             return;
         }
 
@@ -159,6 +159,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.experience += value;
         if (this.experience >= this.experienceTillLevelup) {
             this.levelUp();
+        } else if (value != 0) {
+            this.scene.sound.get('xpSound').play();
         }
         while (this.experience >= this.experienceTillLevelup) {
             if (this.handleAccessExperience()) {

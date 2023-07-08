@@ -15,8 +15,8 @@ export class GameOverOverlay extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('button', '../assets/Button.png');
-        this.load.image('buttonOutline', '../assets/ButtonOutline.png');
+        this.load.image('button', 'assets/Button.png');
+        this.load.image('buttonOutline', 'assets/ButtonOutline.png');
     }
 
     create() {

@@ -75,6 +75,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
         }
 
         this.play(isCritical ? 'projectileCritical' : 'projectile', true);
+        this.scene.sound.get('shootSound').play();
 
         this.shadowScaleY = 0.8;
         this.shadow.scaleY = this.shadowScaleY;

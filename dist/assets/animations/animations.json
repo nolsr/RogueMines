@@ -1,0 +1,40 @@
+{
+    "anims": [
+        {
+            "key": "playerMove",
+            "frames": [
+                { "key": "player", "frame": 1 },
+                { "key": "player", "frame": 2 },
+                { "key": "player", "frame": 3 },
+                { "key": "player", "frame": 4 },
+                { "key": "player", "frame": 5 },
+                { "key": "player", "frame": 6 }
+            ],
+            "frameRate": 13,
+            "repeat": -1,
+            "hideOnComplete": false
+        }, 
+        {
+            "key": "playerHitting",
+            "frames": [
+                { "key": "player", "frame": 7 },
+                { "key": "player", "frame": 8 },
+                { "key": "player", "frame": 9 },
+                { "key": "player", "frame": 10 },
+                { "key": "player", "frame": 11 }
+            ],
+            "frameRate": 30,
+            "repeat": 0,
+            "hideOnComplete": false
+        }, 
+        {
+            "key": "playerStanding",
+            "frames": [
+                { "key": "player", "frame": 0 }
+            ],
+            "frameRate": 1,
+            "repeat": -1,
+            "hideOnComplete": false
+        }
+    ]
+}

@@ -29,7 +29,7 @@ export class GameScene extends Phaser.Scene {
     init(args: any) {
         this.view = args[0];
         this.gameState = new GameState();
-        this.mute = true;
+        this.mute = false;
         console.log(args[0], args[1]);
         if (args[1]) {
             this.floorData = args[1];
@@ -51,29 +51,33 @@ export class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.spritesheet('player', '../assets/PlayerSprite.png', { frameWidth: 16, frameHeight: 16 });
-        this.load.spritesheet('playerNew', '../assets/PlayerSpriteNew.png', { frameWidth: 16, frameHeight: 16 });
-        this.load.spritesheet('playerDown', '../assets/PlayerSpriteDown.png', { frameWidth: 16, frameHeight: 16 });
-        this.load.spritesheet('playerUp', '../assets/PlayerSpriteUp.png', { frameWidth: 16, frameHeight: 16 });
-        this.load.spritesheet('skeleton', '../assets/SkeletonSprite.png', { frameWidth: 16, frameHeight: 16 });
-        this.load.spritesheet('knight', '../assets/KnightSprite.png', { frameWidth: 20, frameHeight: 20});
-        this.load.spritesheet('slime', '../assets/SlimeSprite.png', { frameWidth: 8, frameHeight: 8});
-        this.load.spritesheet('ghost', '../assets/GhostSprite.png', { frameWidth: 7, frameHeight: 10 });
-        this.load.spritesheet('chest', '../assets/Chest.png', { frameWidth: 8, frameHeight: 8 });
-        this.load.spritesheet('fistProjectile', '../assets/FistProjectile.png', { frameWidth: 8, frameHeight: 4 });
-        this.load.spritesheet('fistProjectileCritical', '../assets/FistProjectileCritical.png', { frameWidth: 8, frameHeight: 4 });
+        this.load.spritesheet('player', 'assets/PlayerSprite.png', { frameWidth: 16, frameHeight: 16 });
+        this.load.spritesheet('playerNew', 'assets/PlayerSpriteNew.png', { frameWidth: 16, frameHeight: 16 });
+        this.load.spritesheet('playerDown', 'assets/PlayerSpriteDown.png', { frameWidth: 16, frameHeight: 16 });
+        this.load.spritesheet('playerUp', 'assets/PlayerSpriteUp.png', { frameWidth: 16, frameHeight: 16 });
+        this.load.spritesheet('skeleton', 'assets/SkeletonSprite.png', { frameWidth: 16, frameHeight: 16 });
+        this.load.spritesheet('knight', 'assets/KnightSprite.png', { frameWidth: 20, frameHeight: 20});
+        this.load.spritesheet('slime', 'assets/SlimeSprite.png', { frameWidth: 8, frameHeight: 8});
+        this.load.spritesheet('ghost', 'assets/GhostSprite.png', { frameWidth: 7, frameHeight: 10 });
+        this.load.spritesheet('chest', 'assets/Chest.png', { frameWidth: 8, frameHeight: 8 });
+        this.load.spritesheet('fistProjectile', 'assets/FistProjectile.png', { frameWidth: 8, frameHeight: 4 });
+        this.load.spritesheet('fistProjectileCritical', 'assets/FistProjectileCritical.png', { frameWidth: 8, frameHeight: 4 });
 
-        this.load.image('tileset', '../assets/tilemap/tilemap.png');
-        this.load.image('healthbarBG', '../assets/HealthbarBackground.png');
-        this.load.image('healthbarFG', '../assets/HealthbarForeground.png');
-        this.load.image('levelbar', '../assets/Levelbar.png');
-        this.load.image('levelbarProgressCircle', '../assets/LevelbarProgressCircle.png');
-        this.load.image('levelbarProgress', '../assets/LevelbarProgress.png');
-        this.load.image('xpDrop', '../assets/ExperienceDrop.png');
+        this.load.image('tileset', 'assets/tilemap/tilemap.png');
+        this.load.image('healthbarBG', 'assets/HealthbarBackground.png');
+        this.load.image('healthbarFG', 'assets/HealthbarForeground.png');
+        this.load.image('levelbar', 'assets/Levelbar.png');
+        this.load.image('levelbarProgressCircle', 'assets/LevelbarProgressCircle.png');
+        this.load.image('levelbarProgress', 'assets/LevelbarProgress.png');
+        this.load.image('xpDrop', 'assets/ExperienceDrop.png');
 
-        this.load.audio('music', '../assets/audio/background_music.mp3');
-        this.load.audio('deathSound', '../assets/audio/death.mp3');
-        this.load.audio('levelUpSound', '../assets/audio/upgrade.mp3');
+        this.load.audio('music', 'assets/audio/game-music.mp3');
+        this.load.audio('deathSound', 'assets/audio/death.wav');
+        this.load.audio('levelUpSound', 'assets/audio/levelup.wav');
+        this.load.audio('upgradePicked', 'assets/audio/upgradepicked.wav');
+        this.load.audio('stairsSound', 'assets/audio/stairs.wav');
+        this.load.audio('shootSound', 'assets/audio/shoot.wav');
+        this.load.audio('xpSound', 'assets/audio/xp.wav');
     }
 
     create() {
@@ -100,9 +104,15 @@ export class GameScene extends Phaser.Scene {
 
         // Sound
         this.music = this.sound.add('music', { mute: this.mute, volume: 0.05, rate: 1, loop: true });
-        this.levelUpSound = this.sound.add('levelUpSound', { mute: this.mute, volume: 0.1, rate: 1, loop: false });
-        this.deathSound = this.sound.add('deathSound', { mute: this.mute, volume: 0.05, rate: 1, loop: false });
-        this.music.play();
+        this.levelUpSound = this.sound.add('levelUpSound', { mute: this.mute, volume: 0.2, rate: 1, loop: false });
+        this.deathSound = this.sound.add('deathSound', { mute: this.mute, volume: 0.2, rate: 1, loop: false });
+        this.sound.add('shootSound', { mute: this.mute, volume: 0.5, rate: 1, loop: false });
+        this.sound.add('xpSound', { mute: this.mute, volume: 0.5, rate: 1, loop: false });
+        this.sound.add('stairsSound', { mute: this.mute, volume: 0.5, rate: 1, loop: false });
+
+        if(this.floorData.floor == 1) {
+            this.music.play();
+        }
 
         // UI
         this.gameState.levelbar = this.add.image(this.view.width / 2, this.view.height / 2 + 70, 'levelbar')
@@ -143,12 +153,13 @@ export class GameScene extends Phaser.Scene {
     checkPlayerOnStairs() {
         if (Math.floor(this.gameState.player.x / 8) == this.gameState.currentFloor.stairCoords.x &&
         Math.floor(this.gameState.player.y / 8) == this.gameState.currentFloor.stairCoords.y) {
-            this.music.stop();
             this.scene.stop(this);
 
             this.floorData.enemyScaling += 0.2;
             this.floorData.playerData = this.gameState.player.getPlayerData();
             this.floorData.floor++;
+
+            this.sound.get('stairsSound').play()
 
             this.scene.start('GameScene', [this.view, this.floorData]);
         }
@@ -232,8 +243,8 @@ export class GameScene extends Phaser.Scene {
     }
     
     showDeathScreen() {
+        this.sound.stopAll();
         this.deathSound.play();
-        this.music.stop();
         this.scene.pause();
         this.game.scene.add('GameOverOverlay', new GameOverOverlay(this), true);
     }
