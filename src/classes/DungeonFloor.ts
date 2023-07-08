@@ -39,7 +39,7 @@ export class DungeonFloor {
     private decorateFloor() {
         this.map.forEach((row, rowIndex) => {
             row.forEach((tile, columnIndex) => {
-                if (tile === TileTypes.FLOOR && Math.random() > 0.95) {
+                if (tile === TileTypes.FLOOR && Math.random() > 0.85) {
                     const tileId = randomBetween(1, 3);
                     switch (tileId) {
                         case 1:

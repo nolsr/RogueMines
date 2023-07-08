@@ -12,8 +12,9 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
     shadowScaleY: number;
     direction: Direction;
     isCritical: boolean;
+    speed: number;
 
-    constructor(scene: GameScene, x: number, y: number, direction: Direction, power: number, isCritical: boolean) {
+    constructor(scene: GameScene, x: number, y: number, direction: Direction, power: number, speed: number, isCritical: boolean) {
         switch (direction) {
             case Direction.UP:
                 x += 2;
@@ -36,10 +37,11 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, sprite);
         this.gameScene = scene;
 
-        this.projectileSpeed = 80;
+        this.projectileSpeed = 80 * speed;
         this.projectileDamage = 50 * power * (isCritical ? 2 : 1);
         this.direction = direction;
         this.isCritical = isCritical;
+        this.speed = speed;
 
         this.createAnimations();
         this.setDepth(10);

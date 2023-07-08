@@ -6,4 +6,5 @@ export type PlayerData = {
     attackCooldown: number;
     power: number;
     critChance: number;
+    projectileSpeed: number;
 }

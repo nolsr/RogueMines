@@ -30,6 +30,7 @@ export class LevelUpOverlay extends Phaser.Scene {
         this.load.image('critChanceRune', 'assets/runes/CritRune.png');
         this.load.image('damageRune', 'assets/runes/DamageRune.png');
         this.load.image('moveSpeedRune', 'assets/runes/MoveSpeedRune.png');
+        this.load.image('projectileSpeedRune', 'assets/runes/ProjectileSpeedRune.png');
     }
 
     create() {
