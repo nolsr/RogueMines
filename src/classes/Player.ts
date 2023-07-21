@@ -151,9 +151,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.attackOnCooldown = true;
         this.play('playerHitting', true);
         this.shootProjectile();
+            setTimeout(() => this.attackOnCooldown = false, this.attackCooldown);
         this.on('animationcomplete', () => {
             this.attacking = false;
-            setTimeout(() => this.attackOnCooldown = false, this.attackCooldown);
         });
     }
 
