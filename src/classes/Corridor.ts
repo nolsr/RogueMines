@@ -38,7 +38,7 @@ export class Corridor {
         this.horizontalCorridorBounds = {
             xStart,
             xEnd,
-            centerX: Math.min(xStart + (xEnd - xStart) / 2), // TODO Remove decimal place
+            centerX: Math.min(xStart + (xEnd - xStart) / 2),
             yStart: y - 1,
             yEnd: y + 1,
             centerY: y

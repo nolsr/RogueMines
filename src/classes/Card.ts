@@ -18,9 +18,9 @@ export class Card extends Phaser.GameObjects.Image {
         scene.add.existing(this);
         this.setScale(5);
         this.setInteractive();
+        this.type = this.randomType();
         this.powerUpValue = this.generatepowerUpValue();
 
-        this.type = this.randomType();
         this.printCardContent();
     }
 
@@ -94,8 +94,8 @@ export class Card extends Phaser.GameObjects.Image {
     }
 
     private generatepowerUpValue(): number {
-        const minPercentage = 5;
-        const maxPercentage = 25;
+        const minPercentage = this.type === UpgradeType.PROJ_SPEED ? 15 : 5;
+        const maxPercentage = this.type === UpgradeType.CRIT_CHANCE ? 15 : 25;
 
         const randomValue = Math.random();
 
